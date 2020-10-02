@@ -1,0 +1,234 @@
+﻿@{
+    //load file layout_trangtrong vao day
+    Layout = "~/Views/Shared/LayoutTrangTrong.cshtml";
+}
+@using Add_TemplateAdmin.Models
+@model PagedList.IPagedList<Products>
+@using PagedList.Mvc
+
+@functions{
+    public DataContext db = new DataContext();
+    //ham lay ten danh muc
+    public string GetCategory()
+    {
+        int _category_id = Convert.ToInt32(ViewBag.category_id);
+        //lay mot ban ghi
+        var _record = db.Categories.Where(tbl => tbl.id == _category_id).FirstOrDefault();
+        return _record != null ? _record.name : "";
+    }
+    public List<Categories> ListCategories()
+    {
+        var _listRecord = db.Categories.Where(tbl => tbl.parent_id == 0).OrderByDescending(tbl => tbl.id).ToList();
+        return _listRecord != null ? _listRecord : new List<Categories>();
+    }
+    //ham liet ke cac danh muc san pham cap 1
+    public List<Categories> ListSubCategories(int _id)
+    {
+        var _listRecord = db.Categories.Where(tbl => tbl.parent_id == _id).OrderByDescending(tbl => tbl.id).ToList();
+        return _listRecord != null ? _listRecord : new List<Categories>();
+    }
+}
+@{
+    string _groupPrice = Request.QueryString["groupPrice"] != null ? Request.QueryString["groupPrice"].Trim() : "";
+    string _order = Request.QueryString["order"] != null ? Request.QueryString["order"].Trim() : "";
+    int pageSizeFromUrl = Request.QueryString["pageSize"] != null ? Convert.ToInt32(Request.QueryString["pageSize"].Trim()) : 0;
+
+}
+
+<div class="container">
+    <div class="row">
+        <aside class="sidebar-container col-sm-3 col-sm-pull-9 sidebar-left" role="complementary">
+            <div class="sidebar-inner">
+                <div class="widget-area">
+                    <div id="product_categories-2" class="sidebar-widget widget_product_categories">
+                        <h5 class="widget-title">Danh Mục Sản Phẩm</h5>
+                        <ul class="product-categories">
+                            @{
+                                //lay danh muc cap 1
+                                var _listRecordCategories = ListCategories();
+                            }
+                            @foreach (var item in _listRecordCategories)
+                            {
+                                <li><a style="font-weight:bold" href="/Product/Categories?category_id=@item.id">@item.name</a></li>
+                                //lay cac danh muc cap 2
+                                var _listRecordSubCategories = ListSubCategories(item.id);
+                                foreach (var itemSub in _listRecordSubCategories)
+                                {
+                                    <li style="padding-left:20px;"><a href="/Product/Categories?category_id=@itemSub.id">@itemSub.name</a></li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                    <div id="price_filter-3" class="car-price sidebar-widget widget_product_categories">
+                        <h5 class="widget-title">Lọc theo giá</h5>
+                        <div class="panel-body">
+                            <ul class="list-group" style="border:0px;">
+                                <li class="list-group-item" style="border:0px;">Giá từ <br /> <input class="form-control" type="number" min="0" value="1" id="fromPrice" /></li>
+                                <li class="list-group-item" style="border:0px;">Đến <br /> <input class="form-control" type="number" min="0" value="1" id="toPrice" /></li>
+                                <li class="list-group-item" style="border:0px; text-align:center">
+                                    <input style="border-radius: 20px;margin-right: 20px;" type="button" class=" btn-info" value="Tìm kiếm" onclick="location.href = '/Product/Search?fromPrice=' + document.getElementById('fromPrice').value + '&toPrice=' + document.getElementById('toPrice').value;" />
+                                    <input style="border-radius: 20px;margin-right: 20px;" type="reset" class=" btn-danger" onclick="window.location.reload();" value="Viết lại" />
+                                </li>
+                            </ul>
+                        </div>
+                        <form action="" method="GET" style="margin-top:50px;">
+                            <label class="price-sli" for="amount">Giá : </label>
+                            <input type="text" id="amount" style="border:0; color:#f6931f; font-weight:bold;">
+                            <div id="slider-range"></div>
+                            <button type="button" class=" btn btn-danger" style="margin-top: 30px;margin-left: 55px;padding: 15px;" onclick="location.href = '/Product/Search?amount=' + document.getElementById('amount').value;">
+                                Searching
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </aside>
+        <div class="site-content col-sm-9 col-sm-push-3" role="main">
+            <div class="shop-loop-head">
+                <nav class="breadcrumb">
+                    <a href="/Home/Index"><i class="fas fa-home"></i>Home /</a>
+                    <span class="breadcrumb-last">@GetCategory()</span>
+                </nav>
+                @*<div class="ordering">
+                        <select name="orderby" id="order-by" class="orderby">
+                            <option value="popularity">Phổ biến nhất</option>
+                            <option value="date" selected="selected">Sản phẩm mới nhất</option>
+                            <option value="bestseller">Sản phẩm bán chạy nhất</option>
+                        </select>
+                    </div>*@
+                <div class="ordering">
+                    <select class="form-control" onchange="location.href = '/Product/Categories?category_id=@Convert.ToInt32(ViewBag.category_id)&groupPrice='+this.value+'&order=@_order'+'&pageSize=@pageSizeFromUrl';">
+                        <option value="0">Sắp xếp theo khoảng giá</option>
+                        <option value="1tr-5tr">1 triệu - 5 triệu</option>
+                        <option value="5tr-10tr">5 triệu - 10 triệu</option>
+                        <option value="10tr-15tr">10 triệu - 15 triệu</option>
+                        <option value="15tr-20tr">15 triệu - 20 triệu</option>
+                        <option value="20tr-25tr">20 triệu - 25 triệu</option>
+                        <option value="25tr-30tr">25 triệu - 30 triệu</option>
+                        <option value="30tr-40tr">30 triệu - 40 triệu</option>
+                        <option value="40tr-50tr">40 triệu - 50 triệu</option>
+                        <option value="50tr-vv">50 triệu trở lên</option>
+                    </select>
+                </div>
+                <div class="ordering">
+                    <select class="form-control" onchange="location.href = '/Product/Categories?category_id=@Convert.ToInt32(ViewBag.category_id)&order='+this.value+'&groupPrice=@_groupPrice'+'&pageSize=@pageSizeFromUrl'">
+                        <option value="0">Sắp xếp theo thứ tự</option>
+                        <option value="priceAsc">Giá tăng dần</option>
+                        <option value="priceDesc">Giá giảm dần</option>
+                        <option value="nameAsc">Sắp xếp A-Z</option>
+                        <option value="nameDesc">Sắp xếp Z-A</option>
+                    </select>
+                </div>
+                <div class="ordering">
+                    <select class="form-control" onchange="location.href ='/Product/Categories?category_id=@Convert.ToInt32(ViewBag.category_id)&pageSize='+this.value+'&groupPrice=@_groupPrice'+'&order=@_order'">
+                        <option value="0">Số bản ghi</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="basel-products-loader"></div>
+            <div class="products elements-grid basel-products-holder pagination-pagination row grid-columns-3">
+                @foreach (var item in Model)
+                {
+                    <div class="product-grid-item basel-hover-alt product col-xs-6 col-sm-4 col-md-4 type-product status-publish has-post-thumbnail first instock sale sold-individually shipping-taxable purchasable product-type-simple">
+                        <div class="product-element-top">
+                            <a href="/Product/Detail/@item.id">
+                                <span class="onsale">@item.discount%</span>
+                                <img class="attachment-shop_catalog size-shop_catalog" src="~/Assets/Upload/Products/@item.photo" alt="">
+                            </a>
+                            <div class="hover-img">
+                                <a href="/Product/Detail/@item.id">
+                                    <img class="attachment-shop_catalog size-shop_catalog" src="~/Assets/Upload/Products/@item.photo" alt="">
+                                </a>
+                            </div>
+                        </div>
+                        <h3 class="product-title">
+                            <a href="/Product/Detail/@item.id">@item.name</a>
+                        </h3>
+                        <div class="wrapp-swap">
+                            <span class="price">
+                                <del>
+                                    <span class="Price-amount amount">
+                                        @String.Format("{0:N0}", item.price) VNĐ
+                                    </span>
+                                </del>
+                                <ins>
+                                    <span class="Price-amount amount">
+                                        @if (item.discount == 0)
+                                        {<text>@String.Format("{0:N0}", item.price)</text> }
+                                    else
+                                    {<text>@String.Format("{0:N0}", item.price - (item.discount * item.price) / 100)</text>} VNĐ
+                                    </span>
+                                </ins>
+                            </span>
+                            <div class="swap-elements">
+                                <div class="Shopping">
+                                    <form action="cart/add" method="post" enctype="multipart/form-data" id="product-actions-1168979">
+                                        <i class="fas fa-shopping-cart" style="margin-right:10px;"></i><a href="/Cart/Buy/@item.id">Mua ngay</a>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <!-- paging -->
+            <div style="clear: both;"></div>
+            <style type="text/css">
+                .pagination {
+                    padding: 0px;
+                    margin: 0px;
+                }
+
+                div.pagination-container > ul.pagination > li.active > a {
+                    z-index: 1;
+                    color: #fff;
+                    background-color: #007bff;
+                    border-color: #007bff;
+                    border-top-right-radius: .25rem;
+                    border-bottom-right-radius: .25rem;
+                    cursor: pointer;
+                    position: relative;
+                    padding: .5rem .75rem;
+                    margin-left: -1px;
+                    line-height: 1.25;
+                }
+
+                div.pagination-container > ul.pagination {
+                    display: flex;
+                }
+
+                    div.pagination-container > ul.pagination > li.active > a {
+                        margin-right: 10px;
+                    }
+                    div.pagination-container > ul.pagination > li > a {
+                        margin-right: 10px;
+                    }
+            </style>
+            @Html.PagedListPager((PagedList.IPagedList)Model, page => Url.Action("Categories", new { page, category_id = ViewBag.category_id, groupPrice = _groupPrice }))
+            <!-- end paging -->
+            <div class="description_woocommerce" style="margin-top: 100px;">
+                <div class="term-description">
+                    <h2 style="font-family: cursive;font-size: 30px;margin-left: 50px;margin-bottom:30px;">ADIDAS ULTRABOOST &#8211; SIÊU PHẨM CHẠY BỘ</h2>
+                    <p>Ngay cả cái tên của mẫu giày đã thể hiện đặc diểm nổi bật của nó – đế boost, không chỉ là boost thường, ở<strong> Ultraboost là công nghệ đế boost nén siêu êm</strong> đến từ những hạt nhỏ li ti nhưng được kết dính một cách kì diệu.</p>
+                    <p>Ưu điểm nổi bật nhất của Ultraboost là<em><strong> độ nẩy, độ êm </strong></em>và<em><strong> tái tạo lực chạy </strong></em>cho mỗi bước chân. Đeo lên chân đôi Adidas Ultraboost, cảm giác đầu tiên mà bạn muốn làm – là bỏ chạy, vì dường như mẫu giày này được sinh ra cho việc chạy vậy. Các runner nhận định, Ultraboost là siêu phẩm chạy bộ.</p>
+                    <p>Rất nhiều người chạy bộ cho biết, khi chân đã quen đi Ultraboost rồi thì việc xỏ một đôi giày chạy khác vào là điều khá khó khăn và phải làm quen lại từ đầu, cảm giác như tất cả các mẫu giày chạy khác đều như bị “cứng” hơn vậy. Ngoài ra, Ultraboost còn thích hợp với phong cách quần ngố và quần thể thao để tạo sự thanh thoát và nhanh nhẹn cho cả nam và nữ.</p>
+                    <p><img style="max-width: 100%;vertical-align: middle;height: auto;" class="alignnone size-full wp-image-12106" src="https://shopgiayreplica.com/wp-content/uploads/2017/01/ub5.jpg" alt="Giày Adidas Ultraboost" width="2732" height="2049" /></p>
+                    <p>Giá của một đôi giày Adidas Ultraboost chính hãng khoảng 4.500.000đ vì thế nên không phải ai cũng có thể sở hữu nó để đi chạy. Đến với <a href="https://www.facebook.com/phinongne/"><strong>Longshoes</strong></a>, chúng tôi cam kết đem lại cho bạn sản phẩm đạt <strong><em>95% chất lượng của hàng chính hãng với giả rẻ đến bất ngờ chỉ  hơn 1 triệu đồng.</em></strong></p>
+                    <p>Các bạn luôn được quyền xem thử giày và thậm chí là xỏ chân vào đi thử để có thể cảm nhận sự siêu êm mà đế boost nén mang lại, ưng thì mới cần thanh toán. Từ khi đặt hàng, giày sẽ được chuyển đến bạn trong 1 – 2 ngày trên toàn quốc với phí ship chỉ 30k.</p>
+                    <p>Đừng ngần ngại, nếu có nhu cầu hãy liên hệ chúng tôi qua hotline: <strong>0964.033.455</strong>.</p>
+                    <p>LongShoes luôn phục vụ tốt nhất cho bàn chân của bạn.</p>
+                    <p>&nbsp;</p>
+                </div>
+                <div style="margin-left: 400px;" class="paywall-paragraph-overlay"><a href="javascript:void(0);" class="paywall-readmore">Xem tiếp</a></div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</div>

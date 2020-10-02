@@ -1,0 +1,83 @@
+﻿@{
+    //load file layout_trangtrong vao day
+    Layout = "~/Views/Shared/LayoutTrangTrong.cshtml";
+}
+    <div class="slider-area " style="margin-top: -40px;">
+        <!-- Mobile Menu -->
+        <div  class="single-slider slider-height2 d-flex align-items-center" data-background="/Assets/frontend/img/hero/category.jpg">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="hero-cap text-center">
+                            <h2>Register</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<section class="login_part section_padding">
+    <div class="container" style="margin-top:-100px;">
+        <div class="row align-items-center">
+            <div class="col-lg-6 col-md-6">
+                <div class="login_part_text text-center">
+                    <div class="login_part_text_iner">
+                        @if (Request.QueryString["registered"] != null)
+                        {
+                            <span style="font-size:25px; color:whitesmoke;">Bạn đã đăng ký thành công, xin mời đăng nhập! <br /></span>
+                        }
+                        else
+                        {
+                            <text>Nếu bạn chưa có tài khoản, hãy đăng ký ngay để nhận thông tin ưu đãi cùng những ưu đãi từ cửa hàng.<br /></text>
+                        }
+                        <a href="/Account/Login" class="btn_3">Login an Account</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6">
+                <div class="login_part_form">
+                    <div class="login_part_form_iner">
+                        <h3>
+                            Welcome Back ! <br>
+                            Please Register now
+                        </h3>
+                        <form class="row contact_form" action="/Account/RegisterPost" method="post">
+                            @Html.AntiForgeryToken()
+                            <div class="col-md-12 form-group p_star">
+                                <label>User Name :</label>
+                                <input type="text" class="form-control" id="name" name="name" value=""
+                                       placeholder="Username">
+                            </div>
+                            <div class="col-md-12 form-group p_star">
+                                <label>PassWord :</label>
+                                <input type="password" class="form-control" id="password" name="password" value=""
+                                       placeholder="Password">
+                            </div>
+                            <div class="col-md-12 form-group p_star">
+                                <label>Email :</label>
+                                <input type="text" class="form-control" id="email" name="email" value=""
+                                       placeholder="Email">
+                            </div>
+                            <div class="col-md-12 form-group p_star">
+                                <label>Address :</label>
+                                <input type="text" class="form-control" id="address" name="address" value=""
+                                       placeholder="Address">
+                            </div>
+                            <div class="col-md-12 form-group p_star">
+                                <label>Phone :</label>
+                                <input type="text" class="form-control" id="phone" name="phone" value=""
+                                       placeholder="Phone">
+                            </div>
+                            <div class="col-md-12 form-group">
+                                <button type="submit" value="Đăng ký" class="btn_3">
+                                    Register
+                                </button>
+                                <a class="lost_pass" href="#">forget password?</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,97 @@
+﻿
+@{
+    //load file _Layout.cshtml vao day
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@using Add_TemplateAdmin.Models
+@* su dung doi tuong DataTable, DataRow *@
+@using System.Data
+@* sung dung file Database.cs de thuc hien full sql *@
+@using Add_TemplateAdmin.Models.General
+@* viet cac ham o day *@
+@functions{
+    //tao doi tuong thao tac csdl
+    public DataContext db = new DataContext();
+    //lay ten danh muc
+    public string GetCategoryName(int _category_id)
+    {
+        Categories record = db.Categories.Where(tbl => tbl.id == _category_id).FirstOrDefault();
+        return record != null ? record.name : "";
+    }
+    Products GetProduct(int _product_id)
+    {
+        Products record = db.Products.Where(tbl => tbl.id == _product_id).FirstOrDefault();
+        return record != null ? record : new Products();
+    }
+    DataRow GetCustomer(int _order_id)
+    {
+        DataRow dr = Database.FirstDataTable("select * from customers where id = (select TOP 1 customer_id from Orders where id = " + _order_id + ")");
+        //Response.Write("select * from customers where id = (select TOP 1 customer_id from Orders where id = " + _order_id + ")");
+        return dr;
+    }
+}
+<div class="col-md-12">
+    <div style="margin-bottom:5px;">
+        <a href="#" onclick="history.go(-1);" class="btn btn-primary" style="margin-top:10px;">Back</a>
+    </div>
+    @{
+        int _order_id = Convert.ToInt32(ViewBag.order_id);
+        DataRow drCustomer = GetCustomer(_order_id);
+    }
+    <div class="panel panel-primary">
+        <div class="panel-heading font-weight-bold h3 text-center">Thông tin khách hàng</div>
+        <div class="panel-body" style="margin-top:20px;">
+            <table class="table">
+                <tr>
+                    <td style="width:150px;">Họ tên :</td>
+                    <td>@drCustomer["name"]</td>
+                </tr>
+                <tr>
+                    <td style="width:150px;">Email :</td>
+                    <td>@drCustomer["email"]</td>
+                </tr>
+                <tr>
+                    <td style="width:150px;">Điện thoại :</td>
+                    <td>@drCustomer["phone"]</td>
+                </tr>
+                <tr>
+                    <td style="width:150px;">Địa chỉ :</td>
+                    <td>@drCustomer["address"]</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="panel panel-primary">
+        <div class="panel-heading font-weight-bold h3 text-center">Chi tiết đơn hàng</div>
+        <div class="panel-body" style="margin-top:20px;">
+            <table class="table table-bordered table-hover">
+                <tr>
+                    <th class="text-center" style="width:200px;">Hình ảnh sản phẩm</th>
+                    <th class="text-center">Tên sản phẩm</th>
+                    <th class="text-center" style="width:150px;">Giá sản phẩm</th>
+                    <th class="text-center" style="width:100px;">Số Lượng</th>
+                    <th class="text-center" style="width:200px;">Danh mục</th>
+                </tr>
+                @foreach (var item in Model)
+                {
+                    Products _recordProduct = GetProduct(item.product_id);
+                    <tr>
+                        <td>
+                            @if (File.Exists(Server.MapPath("~/Assets/Upload/Products/" + _recordProduct.photo)))
+                            {
+                                <img src="~/Assets/Upload/Products/@_recordProduct.photo" style="width:100px;" />
+                            }
+                        </td>
+                        <td style="line-height:100px;">@_recordProduct.name</td>
+                        <td style="line-height:100px;" class="text-center">@String.Format("{0:N0}", item.price * item.quantity) VNĐ</td>
+                        <td style="line-height:100px;" class="text-center">@item.quantity</td>
+                        <td class="text-center" style="line-height:100px;">@GetCategoryName(_recordProduct.category_id)</td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>
+
+
+

@@ -1,0 +1,878 @@
+﻿@using Add_TemplateAdmin.Models
+@functions{
+    public DataContext db = new DataContext();
+    //ham lay ten danh muc
+    public string GetCategory()
+    {
+        int _category_id = Convert.ToInt32(ViewBag.category_id);
+        //lay mot ban ghi
+        var _record = db.Categories.Where(tbl => tbl.id == _category_id).FirstOrDefault();
+        return _record != null ? _record.name : "";
+    }
+}
+<!doctype html>
+<html class="no-js" lang="zxx">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Shoes Long - Shop Nike </title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="shortcut icon" type="image/x-icon" href="~/Assets/frontend/img/favicon.ico">
+
+    <!-- CSS here -->
+    <link rel="stylesheet" href="~/Assets/frontend/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/Assets/frontend/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="~/Assets/frontend/css/flaticon.css">
+    <link rel="stylesheet" href="~/Assets/frontend/css/slicknav.css">
+    <link rel="stylesheet" href="~/Assets/frontend/css/animate.min.css">
+    <link rel="stylesheet" href="~/Assets/frontend/css/magnific-popup.css">
+    <link rel="stylesheet" href="~/Assets/frontend/css/fontawesome-all.min.css">
+    <link rel="stylesheet" href="~/Assets/frontend/css/themify-icons.css">
+    <link rel="stylesheet" href="~/Assets/frontend/css/slick.css">
+    <link rel="stylesheet" href="~/Assets/frontend/css/jquery-ui.min.css">
+    <link rel="stylesheet" href="~/Assets/frontend/css/nice-select.css">
+    <link rel="stylesheet" href="~/Assets/frontend/css/style.css">
+    <script src="~/Assets/frontend/js/jquery-3.3.1.min.js"></script>
+    <script src="~/Assets/frontend/js/jquery-ui.min.js"></script>
+
+    @* load jquery vao day *@
+    <script language="javascript" src="~/Assets/js/jquery-3.5.1.min.js"></script>
+
+    <link rel='stylesheet prefetch' href='https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css'>
+
+
+    <style>
+        /*hover-product-buy*/
+        /* css bo cuc */
+        .wrapp-swap {
+            position: relative;
+        }
+
+        .Shopping > i.fas.fa-shopping-cart {
+            margin-right: 15px;
+        }
+
+        wrapp-swap > span {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .swap-elements {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            width: 100%;
+            opacity: 0;
+            transition: .5s ease;
+            background-color: #fff;
+        }
+
+        .wrapp-swap:hover .swap-elements {
+            opacity: 1;
+        }
+
+        .Shopping {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -webkit-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        div#slider-range {
+            height: 5px;
+        }
+
+        span.ui-slider-handle.ui-corner-all.ui-state-default {
+            width: 14px;
+            height: 14px;
+            background-color: red;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        nav.breadcrumb {
+            background-color: white;
+        }
+
+        p.result-count {
+            font-size: 13px;
+            letter-spacing: .3px;
+            color: #9E9E9E;
+            display: inline-block;
+            margin-bottom: 10px;
+            line-height: 20px;
+            vertical-align: middle;
+        }
+
+        .shop-loop-head .ordering {
+            display: inline-block;
+            position: relative;
+            top: -11px;
+            margin-left: 20px;
+            vertical-align: top;
+            color: #636363;
+        }
+
+        .page-title.page-title-default.title-size-small.color-scheme-light.title-design-centered.title-shop {
+            margin-top: 70px;
+        }
+
+        .title-size-small h1 {
+            font-size: 36px;
+            color: #fff;
+        }
+
+        li.cat-item.cat-item-49 {
+            margin-left: 20px;
+        }
+        /* end css bo cuc */
+        /* start css trang chi tiet    */
+        .pagination .page-numbers li a {
+            text-decoration: none;
+        }
+
+        .basel-hover-alt .swap-elements {
+            -webkit-transition: all .2s ease-in-out;
+            -moz-transition: all .2s ease-in-out;
+            -o-transition: all .2s ease-in-out;
+            -ms-transition: all .2s ease-in-out;
+            transition: all .2s ease-in-out;
+        }
+
+        .pagination .page-numbers li .next, .pagination .page-numbers li .prev {
+            border: none;
+            background-color: transparent;
+            font-size: 0;
+            color: #000;
+            line-height: 0;
+            margin-right: -4px;
+        }
+
+        .swap-elements a:hover {
+            color: red;
+        }
+
+        .product-grid-item .product-title a:hover {
+            background: red;
+            transform: translateY(-37px);
+        }
+
+        .pagination .page-numbers li a, .pagination .page-numbers li span {
+            display: inline-block;
+            border: 1px solid transparent;
+            border-bottom: 1px solid #B1B1B1;
+            color: #000;
+            font-size: 16px;
+            width: 34px;
+            line-height: 32px;
+            -webkit-transition: all .2s ease-in-out;
+            -moz-transition: all .2s ease-in-out;
+            -o-transition: all .2s ease-in-out;
+            transition: all .2s ease-in-out;
+        }
+
+        form.odering {
+            display: inline-block;
+        }
+
+        p.result-count {
+            display: inline-block;
+            margin: inherit;
+            margin-right: 50px;
+        }
+
+        .product-element-top:hover .hover-img {
+            opacity: 1;
+        }
+
+        .price:hover .basel-tooltip-label {
+            opacity: 1;
+        }
+
+        a, abbr, acronym, address, applet, article, aside, audio, b, big, blockquote, body, canvas, caption, center, cite, code, dd, del, details, dfn, div, dl, dt, em, embed, fieldset, figcaption, figure, footer, form, h1, h2, h3, h4, h5, h6, header, hgroup, html, i, iframe, img, ins, kbd, label, legend, li, mark, menu, nav, object, ol, output, p, pre, q, ruby, s, samp, section, small, span, strike, strong, sub, summary, sup, table, tbody, td, tfoot, th, thead, time, tr, tt, u, ul, var, video {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            font-size: 100%;
+            vertical-align: baseline;
+        }
+
+        .add_to_cart_button {
+            text-align: center;
+            position: relative;
+        }
+
+        img.attachment-shop_catalog.size-shop_catalog {
+            max-width: 100%;
+        }
+
+        .basel-hover-alt .hover-img {
+            position: absolute;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            -webkit-transition: all .4s ease-in-out;
+            -moz-transition: all .4s ease-in-out;
+            -o-transition: all .4s ease-in-out;
+            transition: all .4s ease-in-out;
+        }
+
+        .title-shop.title-design-centered {
+            text-align: center;
+        }
+
+        .page-title-default {
+            background-color: #212121;
+        }
+
+        .title-shop {
+            border: none;
+        }
+
+        .title-size-small {
+            padding: 15px 0;
+        }
+
+        .page-title {
+            width: 100%;
+            border-bottom: 1px solid rgba(168,168,168,.15);
+            position: relative;
+            margin-top: -40px;
+            margin-bottom: 40px;
+        }
+
+        .color-scheme-light {
+            color: rgba(255,255,255,.8);
+        }
+
+        .title-shop .nav-shop {
+            position: relative;
+        }
+
+        .title-shop .basel-back-btn {
+            position: absolute;
+            top: 50%;
+            margin-top: -18px;
+            left: 0;
+        }
+
+        .basel-back-btn {
+            line-height: 40px;
+            display: inline-block;
+            width: 50px;
+            vertical-align: middle;
+            font-size: 35px;
+            text-decoration: none;
+        }
+
+        .title-shop .nav-shop h1 {
+            float: right;
+            text-transform: uppercase;
+            margin-top: 0;
+            margin-bottom: 0;
+            margin-left: 20px;
+            letter-spacing: 2px;
+            line-height: 50px;
+        }
+
+        .title-shop.title-design-centered .nav-shop h1 {
+            float: none;
+            margin-left: 0;
+        }
+
+        i.fas.fa-chevron-right {
+            font-size: 15px;
+            line-height: 35px;
+        }
+
+        i.fas.fa-angle-right {
+            margin-right: 10px;
+            margin-left: 10px;
+        }
+
+        button.site-btn {
+            margin-top: 20px;
+            margin-left: 70px;
+            color: rgba(0,0,0,.6);
+        }
+
+        div#slider-range {
+            margin-top: 15px;
+        }
+
+        input#amount {
+            margin-left: 10px;
+            position: absolute;
+        }
+
+        label.price-sli {
+            position: relative;
+        }
+
+        .sidebar-widget li > ul li a {
+            color: rgba(0,0,0,.6);
+        }
+
+        .widget_product_categories ul > li a {
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .color-scheme-light a {
+            color: rgba(255,255,255,.9);
+        }
+
+        .basel-back-btn .basel-tooltip-label {
+            display: none;
+        }
+
+        .title-shop.color-scheme-light .nav-shop > .basel-back-btn > span {
+            background-color: #fff;
+        }
+
+        .shop-loop-head {
+            margin-bottom: 20px;
+            margin-top: -10px;
+            text-align: right;
+            line-height: 20px;
+            padding: 10px 0 0;
+            vertical-align: middle;
+            width: 100%;
+        }
+
+            .shop-loop-head .breadcrumb {
+                float: left;
+                margin-bottom: 10px;
+            }
+
+        .breadcrumb {
+            font-size: 13px;
+            line-height: 20px;
+            display: inline-block;
+            color: #9E9E9E;
+            vertical-align: middle;
+        }
+
+        .shop-loop-head .woocommerce-result-count {
+            font-size: 13px;
+            letter-spacing: .3px;
+            color: #9E9E9E;
+            display: inline-block;
+            margin-bottom: 10px;
+            line-height: 20px;
+            vertical-align: middle;
+        }
+
+        .shop-loop-head .ordering {
+            display: inline-block;
+            position: relative;
+            top: -11px;
+            margin-left: 20px;
+            vertical-align: top;
+            color: #636363;
+        }
+
+        .products {
+            -webkit-transition: all .2s ease;
+            -moz-transition: all .2s ease;
+            -o-transition: all .2s ease;
+            transition: all .2s ease;
+        }
+
+        .basel-hover-alt {
+            text-align: left;
+        }
+
+        .product-grid-item {
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .basel-hover-alt .product-element-top {
+            position: relative;
+            overflow: hidden;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            -moz-backface-visibility: hidden;
+            -o-backface-visibility: hidden;
+        }
+
+        .product-grid-item .product-element-top {
+            margin-bottom: 10px;
+        }
+
+        a {
+            color: #202020;
+            -webkit-transition: all .2s;
+            -moz-transition: all .2s;
+            -o-transition: all .2s;
+            transition: all .2s;
+        }
+
+        .product-grid-item .product-element-top > a {
+            display: block;
+        }
+
+        .onsale, .out-of-stock-label {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            z-index: 1;
+            color: #fff;
+            font-size: 13px;
+            border-radius: 50%;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            width: 50px;
+            height: 50px;
+            font-weight: 700;
+            line-height: 50px;
+            text-align: center;
+        }
+
+        .onsale {
+            font-size: 14px;
+            line-height: 33px;
+            padding: 8px 0;
+            background-color: red;
+        }
+
+        a img {
+            border: none;
+        }
+
+        img {
+            height: auto;
+            vertical-align: middle;
+            margin: 0;
+            padding: 0;
+            border: 0;
+            font: inherit;
+            font-size: 100%;
+        }
+
+        .basel-buttons {
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 1;
+        }
+
+            .basel-buttons .product-compare-button, .basel-buttons .quick-view {
+                margin-bottom: 0;
+            }
+
+                .basel-buttons .product-compare-button > a, .basel-buttons .quick-view > a {
+                    display: block;
+                    font-size: 0;
+                    width: 35px;
+                    height: 35px;
+                    text-align: center;
+                    line-height: 35px;
+                    color: rgba(0,0,0,.9);
+                    text-decoration: none;
+                    text-transform: none;
+                }
+
+        .basel-tooltip {
+            text-align: center;
+            position: relative;
+        }
+
+        .basel-hover-alt .product-title {
+            text-align: left;
+            margin-bottom: 12px;
+        }
+
+        .product-grid-item .product-title {
+            margin-bottom: 10px;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .basel-hover-alt .product-title a {
+            display: inline;
+            padding-bottom: 1px;
+            border-bottom: 1px solid rgba(0,0,0,.1);
+        }
+
+        .product-grid-item .product-title a {
+            font-size: 15px;
+            display: inline-block;
+        }
+
+        .basel-hover-alt .wrap-price {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            display: -webkit-flex;
+            -webkit-align-items: center;
+            -webkit-flex-wrap: wrap;
+            -webkit-flex-direction: row;
+            -webkit-justify-content: space-between;
+            display: -ms-flex;
+            -ms-align-items: center;
+            -ms-flex-wrap: wrap;
+            -ms-flex-direction: row;
+            -ms-justify-content: space-between;
+        }
+
+        .basel-hover-alt.product-type-external .price, .basel-hover-alt.product-type-grouped .price, .basel-hover-alt.purchasable .price {
+            margin-bottom: 0;
+        }
+
+        .basel-hover-alt .price {
+            text-align: left;
+            margin-bottom: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .product-grid-item .price {
+            display: block;
+            font-size: 16px;
+            text-align: center;
+            margin-bottom: 0;
+        }
+
+        .price {
+            color: #949494;
+        }
+
+            .price del {
+                color: #BDBDBD;
+                margin-right: 15px;
+            }
+
+        .product-grid-item .price del > .amount {
+            font-size: 14px;
+        }
+
+        .price del > .amount {
+            color: #BDBDBD;
+        }
+
+        .blog-footer, .portfolio-footer, .products-footer {
+            text-align: center;
+        }
+
+        .pagination {
+            display: block;
+            text-align: center;
+        }
+
+            .pagination .page-numbers {
+                display: inline-block;
+            }
+
+        ol, ul {
+            list-style: none;
+        }
+
+        .pagination .page-numbers li {
+            display: inline-block;
+            text-align: center;
+            vertical-align: middle;
+            margin-right: 3px;
+        }
+        /* end css trang chi tiet    */
+        .sidebar-widget {
+            margin-bottom: 50px;
+        }
+
+        .widget-title, .widgettitle {
+            font-size: 16px;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: #1B1919;
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 4px;
+        }
+
+        .widget_price_filter .price_slider_wrapper .ui-widget-content {
+            background-color: #E7E7E7;
+            border: 0;
+        }
+
+        .widget_price_filter .ui-slider-horizontal {
+            height: 2px;
+        }
+
+        .widget_price_filter .ui-slider {
+            position: relative;
+            text-align: left;
+        }
+
+        .widget_price_filter .price_slider {
+            margin-bottom: 30px;
+        }
+
+        .ui-slider-range {
+            background-color: red;
+        }
+
+        .widget_price_filter .ui-slider-horizontal .ui-slider-range {
+            top: 0;
+            height: 100%;
+        }
+
+        .widget_price_filter .ui-slider .ui-slider-range {
+            position: absolute;
+            z-index: 1;
+            font-size: .7em;
+            display: block;
+            border: 0;
+            border-radius: 0;
+            background-color: #1aada3;
+        }
+
+        .widget_price_filter .ui-slider .ui-slider-handle {
+            position: absolute;
+            z-index: 2;
+            width: 4px;
+            height: 15px;
+            background-color: #1aada3;
+            border-radius: 0;
+            cursor: ew-resize;
+            outline: 0;
+            top: -6px;
+        }
+        /*end-hover-product-buy*/
+
+    </style>
+    <script>
+        $(function () {
+            $("#slider-range").slider({
+                range: true,
+                min: 0,
+                max: 100000000,
+                values: [0, 100000000],
+                slide: function (event, ui) {
+                    $("#amount").val(ui.values[0].toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") + "VNĐ"
+                        + "-" + ui.values[1].toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") + "VNĐ");
+                }
+            });
+            $("#amount").val($("#slider-range").slider("values", 0) + "VNĐ" + "-"
+                + $("#slider-range").slider("values", 1) + " VNĐ");
+        });
+    </script>
+</head>
+    <body>
+        <!--Start of Tawk.to Script-->
+        <script type="text/javascript">
+            var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+            (function () {
+                var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+                s1.async = true;
+                s1.src = 'https://embed.tawk.to/5f1460f87258dc118bee887b/default';
+                s1.charset = 'UTF-8';
+                s1.setAttribute('crossorigin', '*');
+                s0.parentNode.insertBefore(s1, s0);
+            })();
+        </script>
+        <!--End of Tawk.to Script-->
+        <!-- Preloader Start -->
+        <div id="preloader-active">
+            <div class="preloader d-flex align-items-center justify-content-center">
+                <div class="preloader-inner position-relative">
+                    <div class="preloader-circle"></div>
+                    <div class="preloader-img pere-text">
+                        <img src="~/Assets/frontend/img/logo/logo.png" alt="Logo" title="Nơi bán giày chính hãng">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Preloader Start -->
+        @* load file Header.cshtml vao day *@
+        @Html.Partial("~/Views/Shared/Header.cshtml")
+
+        <main>
+            <!-- Nike List Start -->
+            <div class="main-page-wrapper">
+                <div class="page-title page-title-default title-size-small color-scheme-light title-design-centered title-shop search">
+                    <div class="container">
+                        <div class="nav-shop">
+
+                            <a href="javascript:javascript:history.go(-1)" class="basel-back-btn basel-tooltip">
+                                <i class="fas fa-caret-left"></i>
+                                <span class="basel-tooltip-label">Back</span>
+                            </a>
+                            <h1>@GetCategory()</h1>
+                        </div>
+                    </div>
+                </div>
+                @*<div class="row">*@
+                    @RenderBody()
+                @*</div>*@
+            </div>
+            <!-- Shop Method Start-->
+            <div class="shop-method-area section-padding30">
+                <div class="container">
+                    <div class="row d-flex justify-content-between">
+                        <div class="col-xl-3 col-lg-3 col-md-6">
+                            <div class="single-method mb-40">
+                                <i class="ti-package"></i>
+                                <h6>Free Shipping Method</h6>
+                                <p>aorem ixpsacdolor sit ameasecur adipisicing elitsf edasd.</p>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-6">
+                            <div class="single-method mb-40">
+                                <i class="ti-unlock"></i>
+                                <h6>Secure Payment System</h6>
+                                <p>aorem ixpsacdolor sit ameasecur adipisicing elitsf edasd.</p>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-6">
+                            <div class="single-method mb-40">
+                                <i class="ti-reload"></i>
+                                <h6>Secure Payment System</h6>
+                                <p>aorem ixpsacdolor sit ameasecur adipisicing elitsf edasd.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Shop Method End-->
+        </main>
+        <footer>
+
+            <!-- Footer Start-->
+            <div class="footer-area footer-padding">
+                <div class="container">
+                    <div class="row d-flex justify-content-between">
+                        <div class="col-xl-3 col-lg-3 col-md-5 col-sm-6">
+                            <div class="single-footer-caption mb-50">
+                                <div class="single-footer-caption mb-30">
+                                    <!-- logo -->
+                                    <div class="footer-logo">
+                                        <a href="index.html"><img src="~/Assets/frontend/img/logo/logo.png" alt="Logo" title="Nơi bán giày chính hãng tốt nhất Việt Nam"></a>
+                                    </div>
+                                    <div class="footer-tittle">
+                                        <div class="footer-pera">
+                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit sed do eiusmod tempor incididunt ut labore.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-5">
+                            <div class="single-footer-caption mb-50">
+                                <div class="footer-tittle">
+                                    <h4>Quick Links</h4>
+                                    <ul>
+                                        <li><a href="#">About</a></li>
+                                        <li><a href="#"> Offers & Discounts</a></li>
+                                        <li><a href="#"> Get Coupon</a></li>
+                                        <li><a href="#">  Contact Us</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-4 col-sm-7">
+                            <div class="single-footer-caption mb-50">
+                                <div class="footer-tittle">
+                                    <h4>New Products</h4>
+                                    <ul>
+                                        <li><a href="#">Woman Cloth</a></li>
+                                        <li><a href="#">Fashion Accessories</a></li>
+                                        <li><a href="#"> Man Accessories</a></li>
+                                        <li><a href="#"> Rubber made Toys</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-5 col-sm-7">
+                            <div class="single-footer-caption mb-50">
+                                <div class="footer-tittle">
+                                    <h4>Support</h4>
+                                    <ul>
+                                        <li><a href="#">Frequently Asked Questions</a></li>
+                                        <li><a href="#">Terms & Conditions</a></li>
+                                        <li><a href="#">Privacy Policy</a></li>
+                                        <li><a href="#">Privacy Policy</a></li>
+                                        <li><a href="#">Report a Payment Issue</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Footer bottom -->
+                    <div class="row">
+                        <div class="col-xl-7 col-lg-7 col-md-7">
+                            <div class="footer-copy-right">
+                                <p>
+                                    Copyright &copy;
+                                    <script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="ti-heart" aria-hidden="true"></i> by <a href="https://google.com" target="_blank">Nong</a>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-xl-5 col-lg-5 col-md-5">
+                            <div class="footer-copy-right f-right">
+                                <!-- social -->
+                                <div class="footer-social">
+                                    <a href="https://www.facebook.com/phinongne/"><i class="fab fa-twitter"></i></a>
+                                    <a href="https://www.facebook.com/phinongne/"><i class="fab fa-facebook-f"></i></a>
+                                    <a href="https://www.facebook.com/phinongne/"><i class="fab fa-behance"></i></a>
+                                    <a href="https://www.facebook.com/phinongne/"><i class="fas fa-globe"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Footer End-->
+
+        </footer>
+
+        <!-- JS here -->
+        <!-- All JS Custom Plugins Link Here here -->
+        <script src="~/Assets/frontend/js/vendor/modernizr-3.5.0.min.js"></script>
+        <!-- Jquery, Popper, Bootstrap -->
+        <script src="~/Assets/frontend/js/vendor/jquery-1.12.4.min.js"></script>
+        <script src="~/Assets/frontend/js/popper.min.js"></script>
+        <script src="~/Assets/frontend/js/bootstrap.min.js"></script>
+        <script src="~/Assets/frontend/js/jquery-3.3.1.min.js"></script>
+        <!-- Jquery Mobile Menu -->
+        <script src="~/Assets/frontend/js/jquery.slicknav.min.js"></script>
+        <!-- Ui-slider-css-js -->
+        <script src="~/Assets/frontend/js/jquery-ui.min.js"></script>
+        <!-- Jquery Slick , Owl-Carousel Plugins -->
+        <script src="~/Assets/frontend/js/owl.carousel.min.js"></script>
+        <script src="~/Assets/frontend/js/slick.min.js"></script>
+
+        <!-- One Page, Animated-HeadLin -->
+        <script src="~/Assets/frontend/js/wow.min.js"></script>
+        <script src="~/Assets/frontend/js/animated.headline.js"></script>
+        <script src="~/Assets/frontend/js/jquery.magnific-popup.js"></script>
+
+        <!-- Scrollup, nice-select, sticky -->
+        <script src="~/Assets/frontend/js/jquery.scrollUp.min.js"></script>
+        <script src="~/Assets/frontend/js/jquery.nice-select.min.js"></script>
+        <script src="~/Assets/frontend/js/jquery.sticky.js"></script>
+
+        <!-- contact js -->
+        <script src="~/Assets/frontend/js/contact.js"></script>
+        <script src="~/Assets/frontend/js/jquery.form.js"></script>
+        <script src="~/Assets/frontend/js/jquery.validate.min.js"></script>
+        <script src="~/Assets/frontend/js/mail-script.js"></script>
+        <script src="~/Assets/frontend/js/jquery.ajaxchimp.min.js"></script>
+
+        <!-- Jquery Plugins, main Jquery -->
+        <script src="~/Assets/frontend/js/plugins.js"></script>
+        <script src="~/Assets/frontend/js/main.js"></script>
+    </body>
+</html>

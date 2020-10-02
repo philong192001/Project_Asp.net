@@ -1,0 +1,85 @@
+﻿@{
+    //load file _Layout.cshtml vao day
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@* nhin thay cac file trong thu muc Models *@
+@using Add_TemplateAdmin.Models
+@* cac ham trong view se viet o trong khoi sau *@
+@functions{
+    //khoi tao doi tuong thao tac csdl
+    public DataContext db = new DataContext();
+    //ham lay cac danh muc co parent_id = 0
+    public List<Categories> ListCategory()
+    {
+        List<Categories> _ListRecord = new List<Categories>();
+        if (Model != null)
+        {
+            int _id = Convert.ToInt32(Model.id);
+            _ListRecord = db.Categories.Where(tbl => tbl.parent_id == 0 && tbl.id != _id).OrderByDescending(tbl => tbl.id).ToList();
+        }
+        else
+        {
+            _ListRecord = db.Categories.Where(tbl => tbl.parent_id == 0).OrderByDescending(tbl => tbl.id).ToList();
+        }
+        return _ListRecord != null ? _ListRecord : new List<Categories>();
+    }
+    //hamn lay cac danh muc con
+    public List<Categories> ListSubCategory(int _id)
+    {
+        List<Categories> _ListRecord = db.Categories.Where(tbl => tbl.parent_id == _id && tbl.id != _id).OrderByDescending(tbl => tbl.id).ToList();
+        return _ListRecord != null ? _ListRecord : new List<Categories>();
+    }
+}
+<div class="col-md-12">
+    <div class="panel panel-primary" style="margin-top:20px;">
+        <div class="panel-heading font-weight-bold h3 text-center">Add edit category</div>
+        <div class="panel-body" style="margin-top:20px;">
+            <form method="post" action="@ViewBag.action">
+                @Html.AntiForgeryToken()
+                <!-- rows -->
+                <div class="row" style="margin-top:5px;">
+                    <div class="col-md-2 h5">Name :</div>
+                    <div class="col-md-10">
+                        <input type="text" value="@if (Model != null) {<text>@Model.name</text>}" name="name" class="form-control" required>
+                    </div>
+                </div>
+                <!-- end rows -->
+                <!-- rows -->
+                <div class="row" style="margin-top:5px;">
+                    <div class="col-md-2 h5">Danh mục cha </div>
+                    <div class="col-md-10">
+                        <select name="parent_id" class="form-control">
+                            <option value="0"></option>
+                            @* liet ke cac danh muc cap dau tien *@
+                            @{
+                                var ListRecord = ListCategory();
+                            }
+                            @foreach (var item in ListRecord)
+                            {
+                                <option @if (Model != null && Model.parent_id == item.id) { <text> selected</text> } value="@item.id">@item.name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <!-- end rows -->
+                <!-- rows -->
+                <div class="row" style="margin-top:5px;">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-10">
+                        <input type="checkbox" @if (Model != null && Convert.ToInt32(Model.displayhome) == 1) { <text> checked</text> } name="displayhome" id="displayhome"> <label for="displayhome">Hiển thị ra trang chủ</label>
+                    </div>
+                </div>
+                <!-- end rows -->
+                <!-- rows -->
+                <div class="row" style="margin-top:5px;">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-10">
+                        <input type="submit" value="Process" class="btn btn-primary">
+                    </div>
+                </div>
+                <!-- end rows -->
+            </form>
+        </div>
+    </div>
+</div>
+

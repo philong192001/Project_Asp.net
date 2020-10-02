@@ -1,0 +1,136 @@
+﻿@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@* nhin thay cac file trong thu muc Models *@
+@using Add_TemplateAdmin.Models
+@* cac ham trong view se viet o trong khoi sau *@
+@functions{
+    //khoi tao doi tuong thao tac csdl
+    public DataContext db = new DataContext();
+    //ham lay cac danh muc co parent_id = 0
+    public List<Categories> ListCategory()
+    {
+        List<Categories> _ListRecord = new List<Categories>();
+        if (Model != null)
+        {
+            int _id = Convert.ToInt32(Model.id);
+            _ListRecord = db.Categories.Where(tbl => tbl.parent_id == 0 && tbl.id != _id).OrderByDescending(tbl => tbl.id).ToList();
+        }
+        else
+        {
+            _ListRecord = db.Categories.Where(tbl => tbl.parent_id == 0).OrderByDescending(tbl => tbl.id).ToList();
+        }
+        return _ListRecord != null ? _ListRecord : new List<Categories>();
+    }
+    //hamn lay cac danh muc con
+    public List<Categories> ListSubCategory(int _id)
+    {
+        List<Categories> _ListRecord = db.Categories.Where(tbl => tbl.parent_id == _id && tbl.id != _id).OrderByDescending(tbl => tbl.id).ToList();
+        return _ListRecord != null ? _ListRecord : new List<Categories>();
+    }
+}
+<div class="col-md-12">
+    <div class="panel panel-primary"  style="margin-top:20px;">
+        <div class="panel-heading font-weight-bold h3 text-center">Add Edit product</div>
+        <div class="panel-body" style="margin-top:20px;">
+            @* muon upload duoc anh phai co thuoc tinh enctype="multipart/form-data" *@
+            @* mac dinh upload file <= 2Mb *@
+            <form method="post" enctype="multipart/form-data" action="@ViewBag.action">
+                @Html.AntiForgeryToken()
+                <!-- rows -->
+                <div class="row" style="margin-top:5px;">
+                    <div class="col-md-2">Tên sản phẩm</div>
+                    <div class="col-md-10">
+                        <input type="text" value="@if (Model != null) {<text>@Model.name</text>}" name="name" class="form-control" required>
+                    </div>
+                </div>
+                <!-- end rows -->
+                <!-- rows -->
+                <div class="row" style="margin-top:5px;">
+                    <div class="col-md-2">Giá sản phẩm</div>
+                    <div class="col-md-10">
+                        <input type="text" value="@if (Model != null) {<text>@Model.price</text>}" name="price" class="form-control" required>
+                    </div>
+                </div>
+                <!-- end rows -->
+                <!-- rows -->
+                <div class="row" style="margin-top:5px;">
+                    <div class="col-md-2">% Discount (giảm giá)</div>
+                    <div class="col-md-10">
+                        <input type="text" value="@if (Model != null) {<text>@Model.discount</text>} else {<text>0</text>}" name="discount" min="0" class="form-control" required>
+                    </div>
+                </div>
+                <!-- end rows -->
+                <!-- rows -->
+                <div class="row" style="margin-top:5px;">
+                    <div class="col-md-2">Danh mục</div>
+                    <div class="col-md-10">
+                        <select name="category_id" class="form-control" style="width: 300px;">
+                            @{
+                                var _ListRecord = ListCategory();
+                            }
+                            @* cap dau tien *@
+                            @foreach (var item in _ListRecord)
+                            {
+                                <option @if (Model != null && Model.category_id == item.id) { <text> selected</text> } value="@item.id">@item.name</option>
+                                var _ListSubRecord = ListSubCategory(item.id);
+                                foreach (var itemSub in _ListSubRecord)
+                                {
+                                    <option @if (Model != null && Model.category_id == itemSub.id) { <text> selected</text> } value="@itemSub.id">&nbsp;&nbsp;&nbsp;&nbsp;@itemSub.name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <!-- end rows -->
+                <!-- rows -->
+                <div class="row" style="margin-top:5px;">
+                    <div class="col-md-2">Mô tả</div>
+                    <div class="col-md-10">
+                        <textarea name="description" id="description">@if (Model != null) {<text>@Model.description</text>}</textarea>
+                        <script language="javascript">
+                            CKEDITOR.replace("description");
+                        </script>
+                    </div>
+                </div>
+                <!-- end rows -->
+                <!-- rows -->
+                <div class="row" style="margin-top:5px;">
+                    <div class="col-md-2">Nội dung</div>
+                    <div class="col-md-10">
+                        <textarea name="content" id="content">@if (Model != null) {<text>@Model.content</text>}</textarea>
+                        <script language="javascript">
+                            //CKEDITOR.config.height = 300;
+                            CKEDITOR.replace("content");
+                        </script>
+                    </div>
+                </div>
+                <!-- end rows -->
+                <!-- rows -->
+                <div class="row" style="margin-top:5px;">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-10">
+                        <input type="checkbox" @if (Model != null && Convert.ToInt32(Model.hot) == 1) { <text> checked</text> } name="hot" id="hot"> <label for="hot">Hot</label>
+                    </div>
+                </div>
+                <!-- end rows -->
+                <!-- rows -->
+                <div class="row" style="margin-top:5px;">
+                    <div class="col-md-2">Upload Hình Ảnh</div>
+                    <div class="col-md-10">
+                        <input type="file" name="photo">
+                    </div>
+                </div>
+                <!-- end rows -->
+                <!-- rows -->
+                <div class="row" style="margin-top:5px;">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-10" style="margin-top:20px;">
+                        <input type="submit" value="Process" class="btn btn-primary" >
+                    </div>
+                </div>
+                <!-- end rows -->
+            </form>
+        </div>
+    </div>
+</div>

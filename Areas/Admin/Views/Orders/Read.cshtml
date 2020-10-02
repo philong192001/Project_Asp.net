@@ -1,0 +1,71 @@
+﻿@{
+    //load file _Layout.cshtml vao day
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@using Add_TemplateAdmin.Models
+@model PagedList.IPagedList<Orders>
+@using PagedList.Mvc
+
+@functions{
+    public DataContext db = new DataContext();
+    public string GetCustomerName(int _customer_id)
+    {
+        Customers record = db.Customers.Where(tbl => tbl.id == _customer_id).FirstOrDefault();
+        return record != null ? record.name : "";
+    }
+}
+<style>
+    <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" / >
+</style>
+<div class="col-md-12">
+    <div class="panel panel-primary" style="margin-top: 20px;">
+        <div class="panel-heading font-weight-bold h3 text-center">Orders</div>
+        <div class="panel-body" style="margin-top:20px;">
+            <table class="table table-bordered table-hover">
+                <tr>
+                    <th> Tên Khách Hàng</th>
+                    <th>Ngày Đặt Hàng</th>
+                    <th>Tổng Giá</th>
+                    <th>Trạng thái</th>
+                    <th style="width:120px;"></th>
+                    <th style="width:120px;"></th>
+                </tr>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@GetCustomerName(item.customer_id)</td>
+                        <td>@item.date.ToString("dd/MM/yyyy")</td>
+                        <td>@String.Format("{0:N0}", item.price) VNĐ</td>
+                        <td>
+                            @if (item.status == 0)
+                            {
+                                <text><label class="label label-success">Chưa giao hàng</label></text>
+                            }
+                            else
+                            {
+                                <text><label class="label label-danger">Đã giao hàng</label></text>
+                            }
+                        </td>
+                        <td style="text-align:center;">
+                            <label class="label label-danger"><a href="/Admin/Orders/Detail/@item.id">Chi tiết<i style="margin-left:5px;" class="fas fa-info-circle"></i></a></label>&nbsp;&nbsp;
+                        </td>
+                        <td style="text-align:center;">
+                            @if (item.status == 0)
+                            {
+                                <label class="label label-info"><a href="/Admin/Orders/Delivery/@item.id"><i class="fas fa-shipping-fast"></i>Giao hàng</a></label>
+                            }
+                        </td>
+                    </tr>
+                }
+            </table>
+            <style type="text/css">
+                .pagination {
+                    padding: 0px;
+                    margin: 0px;
+                }
+            </style>
+            @Html.PagedListPager((PagedList.IPagedList)Model, page => Url.Action("Read", new { page, a = 1, b = 2 }))
+        </div>
+    </div>
+</div>
+

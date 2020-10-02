@@ -1,0 +1,46 @@
+﻿
+@{
+    //load file _Layout.cshtml vao day
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@using Add_TemplateAdmin.Models
+@model PagedList.IPagedList<Users>
+@using PagedList.Mvc
+
+<div class="col-md-12" style="margin-top:20px;">
+    <div style="margin-bottom:10px; margin-top:10px;float:right;">
+        <a href="/Admin/Users/Create" class="btn btn-primary">Add user</a>
+    </div>
+    <div class="panel panel-primary" style="margin-top:20px;">
+        <div class="panel-heading font-weight-bold h3 text-center">Danh sách User</div>
+        <div class="panel-body">
+            <table class="table table-bordered table-hover">
+                <tr>
+                    <th class="text-center">UserName</th>
+                    <th class="text-center">Email</th>
+                    <th class="text-center" style="width:100px;"></th>
+                    <th class="text-center" style="width:100px;"></th>
+                </tr>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-center">@item.name</td>
+                        <td class="text-center">@item.email</td>
+                        <td class="text-center"> <a href="/Admin/Users/Update/@item.id"><i class="fas fa-edit"></i>Edit</a>&nbsp;</td>
+                        <td style="text-align:center;">
+                            <a href="/Admin/Users/Delete/@item.id" onclick="return window.confirm('Are you sure?');"><i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                }
+            </table>
+            <style type="text/css">
+                .pagination {
+                    padding: 0px;
+                    margin: 0px;
+                }
+            </style>
+            @*@Html.PagedListPager(Model, page => Url.Action("Read", new { }), new PagedListRenderOptions { UlElementClasses = new string[] { "pagination pagination-sm no-margin pull-right" } })*@
+            @Html.PagedListPager((PagedList.IPagedList)Model, page => Url.Action("Read", new { page, a = 1, b = 2 }))
+        </div>
+    </div>
+</div>

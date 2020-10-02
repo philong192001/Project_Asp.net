@@ -1,0 +1,53 @@
+﻿@foreach (var itemProduct in Model)
+{
+    <div class="col-xl-3 col-lg-4 col-md-6">
+        <div class="single-product mb-60 animate__animated animate__tada">
+            <div class="product-img">
+                <a href="/Product/Detail/@itemProduct.id">
+                    <img src="~/Assets/upload/Products/@itemProduct.photo" alt="Vans classic"
+                         title="Vans Kyle Walker Pro">
+                </a>
+                <div class="new-product">
+                    <span>@itemProduct.discount%</span>
+                </div>
+            </div>
+            <div class="product-caption">
+                <div class="start">
+                    <div style="margin-bottom:5px;">
+                        <a href="/Product/Rating/@itemProduct.id?star=1">  <label class="star" for="star"></label></a>
+                        <a href="/Product/Rating/@itemProduct.id?star=2"><label class="star" for="star"></label></a>
+                        <a href="/Product/Rating/@itemProduct.id?star=3"><label class="star" for="star"></label></a>
+                        <a href="/Product/Rating/@itemProduct.id?star=4"><label class="star" for="star"></label></a>
+                        <a href="/Product/Rating/@itemProduct.id?star=5"><label class="star" for="star"></label></a>
+                    </div>
+                </div>
+                <h4><a href="/Product/Detail/@itemProduct.id">@itemProduct.name</a></h4>
+                <div class="wrapp-swap">
+                    <span class="price">
+                        <del>
+                            <span class="Price-amount amount">
+                                @String.Format("{0:N0}", itemProduct.price) VNĐ
+                            </span>
+                        </del>
+                        <ins>
+                            <span class="Price-amount amount">
+                                @if (itemProduct.discount == 0)
+                                {<text>@String.Format("{0:N0}", itemProduct.price)</text> }
+                            else
+                            {<text>@String.Format("{0:N0}", itemProduct.price - (itemProduct.discount * itemProduct.price) / 100)</text>} VNĐ
+                            </span>
+                        </ins>
+                    </span>
+                    <div class="swap-elements">
+                        <div class="Shopping">
+                            <form action="cart/add" method="post" enctype="multipart/form-data" id="product-actions-1168979">
+                                <i class="fas fa-shopping-cart" style="margin-right:10px;"></i><a href="/Cart/Buy/@itemProduct.id">Mua ngay</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

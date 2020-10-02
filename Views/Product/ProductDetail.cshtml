@@ -1,0 +1,494 @@
+﻿@{
+    //load file layout_trangtrong vao day
+    Layout = "~/Views/Shared/LayoutTrangTrong.cshtml";
+}
+@using Add_TemplateAdmin.Models
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"
+        integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+        crossorigin="anonymous"></script>
+<style>
+    .item {
+        position: relative;
+        overflow: hidden;
+    }
+    .img {
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+    }
+</style>
+<style>
+    i.fas.fa-star {
+        font-size: 25px;
+        color: yellow;
+    }
+
+    .page-title.page-title-default.title-size-small.color-scheme-light.title-design-centered.title-shop.search > .container {
+        margin-top: 0px;
+    }
+
+    .tabs {
+        margin-bottom: 25px;
+        text-align: center;
+    }
+
+        .tabs li.active {
+            border-color: #545454;
+        }
+
+        .tabs li {
+            display: inline-block;
+            margin-right: 30px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #E4E4E4;
+        }
+
+            .tabs li.active a {
+                color: rgba(0,0,0,.9);
+            }
+
+            .tabs li a {
+                display: inline-block;
+                font-size: 20px;
+                font-weight: 600;
+                color: rgba(0,0,0,.5);
+                padding: 3px 0;
+            }
+
+    .basel-accordion-title {
+        display: none;
+    }
+
+    .entry-content p {
+        line-height: 1.7;
+        letter-spacing: .3px;
+        font-size: 16px;
+    }
+
+    strong {
+        font-weight: 700;
+    }
+
+    img {
+        /* max-width: 100%; */
+        height: auto;
+        vertical-align: middle;
+    }
+    /* css container two end */
+    .product_meta > span span {
+        margin: 0 2px;
+        line-height: 1.4;
+    }
+
+    .product_meta > span {
+        margin-bottom: 10px;
+        font-weight: 700;
+    }
+
+    .product_meta {
+        margin-top: 5px;
+        padding-top: 15px;
+        display: block;
+        margin-left: -10px;
+    }
+
+    span.tagged_as {
+        display: block;
+    }
+
+    span.posted_in {
+        display: block;
+    }
+
+    a.tag-related {
+        color: black;
+        font-weight: 400;
+    }
+
+    span.sku_wrapper {
+        display: block;
+    }
+
+    span.sku {
+        font-weight: 400;
+    }
+
+    i.fas.fa-check-circle {
+        margin-right: 5px;
+        color: green;
+    }
+
+    b, strong {
+        font-size: 20px;
+    }
+
+    div#nav-tab {
+        margin-right: 490px;
+    }
+
+    .sale_shop {
+        border: 1px dashed red;
+        padding: 15px;
+        margin: 15px -9px 0px -12px;
+        border-radius: 5px;
+        padding-bottom: 75px;
+    }
+
+    a.contact {
+        margin-top: 11px;
+    }
+
+    .telephone {
+        background-color: #0fa8e2;
+        text-align: center;
+        width: 150px;
+        padding: 5px;
+    }
+
+    button.button.alt {
+        background-color: red;
+    }
+
+    b, sup, sub, u, del {
+        color: #bbb;
+        font-size: 16px;
+        margin-right: 20px;
+    }
+
+    p.price {
+        font-size: 25px;
+    }
+
+    .content {
+        margin-left: 100px;
+        padding: 15px;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    /* Position the image container (needed to position the left and right arrows) */
+    .container {
+        position: relative;
+        margin-top: 50px;
+    }
+
+    /* Hide the images by default */
+    .mySlides {
+        display: none;
+    }
+
+    /* Add a pointer when hovering over the thumbnail images */
+    .cursor {
+        cursor: pointer;
+    }
+
+    /* Next & previous buttons */
+    .prev,
+    .next {
+        cursor: pointer;
+        position: absolute;
+        top: 40%;
+        width: auto;
+        padding: 16px;
+        margin-top: -50px;
+        color: white;
+        font-weight: bold;
+        font-size: 20px;
+        border-radius: 0 3px 3px 0;
+        user-select: none;
+        -webkit-user-select: none;
+    }
+
+    /* Position the "next button" to the right */
+    .next {
+        right: 630px;
+        border-radius: 3px 0 0 3px;
+    }
+
+        /* On hover, add a black background color with a little bit see-through */
+        .prev:hover,
+        .next:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+    /* Number text (1/3 etc) */
+    .numbertext {
+        color: black;
+        font-size: 12px;
+        padding: 8px 12px;
+        position: absolute;
+        top: 0;
+    }
+
+    /* Container for image text */
+    .caption-container {
+        text-align: center;
+        background-color: #222;
+        padding: 2px 16px;
+        color: white;
+    }
+
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+    .content > .row {
+        margin-top: 25px;
+    }
+
+    /* Six columns side by side */
+    .column {
+        float: left;
+    }
+
+    /* Add a transparency effect for thumnbail images */
+    .demo {
+        opacity: 0.6;
+    }
+
+        .active,
+        .demo:hover {
+            opacity: 1;
+        }
+</style>
+<main>
+    <div class="container-fluid">
+        <div class="container" style="margin-left:85px;">
+            <div class="row">
+                <div class="product-img">
+                    <div class="mySlides item">
+                        @*<div class="numbertext ">1/4</div>*@
+                        <img class="img" src="~/Assets/Upload/Products/@Model.photo" alt="" style="width:540px;">
+                    </div>
+                    <div class="mySlides">
+                        <div class="numbertext item">2/4</div>
+                        <img src="~/Assets/Upload/Products/@Model.photo" alt="" style="width:540px;">
+                    </div>
+                    <div class="mySlides">
+                        <div class="numbertext item">3/4</div>
+                        <img src="~/Assets/Upload/Products/@Model.photo" alt="" style="width:540px;">
+                    </div>
+                    <div class="mySlides">
+                        <div class="numbertext item">4/4</div>
+                        <img src="~/Assets/Upload/Products/@Model.photo" alt="" style="width:540px;">
+                    </div>
+                    <!-- Next and previous buttons -->
+                    <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+                    <a class="next" onclick="plusSlides(1)">&#10095;</a>
+                    <!-- Thumbnail images -->
+                    <div class="row">
+                        <div class="column">
+                            <img class="demo cursor" src="~/Assets/Upload/Products/@Model.photo" onclick="currentSlide(1)" alt="The Woods" style="width:138.5px;">
+                        </div>
+                        <div class="column">
+                            <img class="demo cursor" src="~/Assets/Upload/Products/@Model.photo" onclick="currentSlide(2)" alt="Cinque Terre" style="width:138.5px;">
+                        </div>
+                        <div class="column">
+                            <img class="demo cursor" src="~/Assets/Upload/Products/@Model.photo" onclick="currentSlide(3)" alt="Mountains and fjords" style="width:138.5px;">
+                        </div>
+                        <div class="column">
+                            <img class="demo cursor" src="~/Assets/Upload/Products/@Model.photo" onclick="currentSlide(4)" alt="Northern Lights" style="width:138.5px;">
+                        </div>
+
+                    </div>
+                </div>
+                <div class="content">
+                    <h1 style="font-weight:500;font-family:'Berlin Sans FB';font-size:30px;">@Model.name</h1>
+                    <p class="price">
+                        <del>
+                            <span>
+                                @String.Format("{0:N0}", Model.price) VNĐ
+                            </span>
+                        </del>
+                        <ins>
+                            <span>
+                                @if (Model.discount == 0)
+                                {<text>@String.Format("{0:N0}", Model.price)</text> }
+                            else
+                            {<text>@String.Format("{0:N0}", Model.price - (Model.discount * Model.price) / 100)</text>} VNĐ
+                            </span>
+                        </ins>
+                    </p>
+                    <div class="row">
+                        <div class="Buy">
+                            <form action="/Cart/Buy/@Model.id" class="card" method="POST">
+                                <button type="submit" class="button alt">Mua ngay</button>
+                            </form>
+                        </div>
+                        <div class="telephone card">
+                            <a href="https://www.facebook.com/phinongne" class="contact">Liên Hệ</a>
+                        </div>
+                    </div>
+                    <div class="sale_shop">
+                        <strong>Đánh giá của khách hàng</strong>
+                        <div class="start" style="margin-top:20px;">
+                            <table>
+                                <tr>
+                                    <td><i class="fas fa-star"></i></td>
+                                    <td class="quantity-start" style="text-align:right">@ViewBag.star1 đánh giá</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </td>
+                                    <td class="quantity-start" style="text-align:right">@ViewBag.star2 đánh giá</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </td>
+                                    <td class="quantity-start" style="text-align:right">@ViewBag.star3 đánh giá</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </td>
+                                    <td class="quantity-start" style="text-align:right">@ViewBag.star4 đánh giá</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    <td class="quantity-start" style="text-align:right">@ViewBag.star5 đánh giá</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="product_meta">
+                        <span class="sku_wrapper">
+                            SKU :
+                            <span class="sku">GS04</span>
+                        </span>
+                        <span class="posted_in">
+                            Category :
+                            <a href="#" class="tag-related">GIay</a>
+                        </span>
+                        <span class="tagged_as">
+                            Tags :
+                            <a href="#" class="tag-related">Gucci</a>
+                            <span>,</span>
+                            <a href="#" class="tag-related">Puma</a>
+                            <span>,</span>
+                            <a href="#" class="tag-related">Nike</a>
+                        </span>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+        <div class="product-tabs-wrapper">
+            <div class="container-two">
+                <section class="latest-product-area padding-bottom">
+                    <div class="container">
+                        <div class="row product-btn d-flex justify-content-end align-items-end">
+                            <!-- Section Tittle -->
+                            <div class="col-xl-8 col-lg-7 col-md-7">
+                                <div class="properties__button f-right">
+                                    <!--Nav Button  -->
+                                    <nav>
+                                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab"
+                                               href="#nav-home" role="tab" aria-controls="nav-home"
+                                               aria-selected="true">Description</a>
+                                            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab"
+                                               href="#nav-profile" role="tab" aria-controls="nav-profile"
+                                               aria-selected="false">Chi tiet</a>
+                                        </div>
+                                    </nav>
+                                    <!--End Nav Button  -->
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Nav Card -->
+                        <div class="tab-content" id="nav-tabContent">
+                            <!-- card one -->
+                            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                                @Html.Raw(Model.description)
+                            </div>
+                            <!-- Card two -->
+                            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                                @Html.Raw(Model.content)
+                            </div>
+                        </div>
+                        <!-- End Nav Card -->
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</main>
+<script>
+    $(function () {
+        var zoom = function (elm) {
+            elm
+                .on('mouseover', function () {
+                    $(this).children('.img').css({ 'transform': 'scale(2)' });
+                })
+                .on('mouseout', function () {
+                    $(this).children('.img').css({ 'transform': 'scale(1)' });
+                })
+                .on('mousemove', function (e) {
+                    $(this).children('.img').css({ 'transform-origin': ((e.pageX - $(this).offset().left) / $(this).width()) * 100 + '% ' + ((e.pageY - $(this).offset().top) / $(this).height()) * 100 + '%' });
+                })
+        }
+
+        $('.item').each(function () {
+            $(this)
+                .append('<div class="img"></div>')
+                .children('.img').css({ 'background-image': 'url(' + $(this).data('image') + ')' });
+            zoom($(this));
+        })
+    })
+</script>
+<script>
+    var slideIndex = 1;
+    showSlides(slideIndex);
+
+    // Next/previous controls
+    function plusSlides(n) {
+        showSlides(slideIndex += n);
+    }
+
+    // Thumbnail image controls
+    function currentSlide(n) {
+        showSlides(slideIndex = n);
+    }
+
+    function showSlides(n) {
+        var i;
+        var slides = document.getElementsByClassName("mySlides");
+        var dots = document.getElementsByClassName("demo");
+        var captionText = document.getElementById("caption");
+        if (n > slides.length) { slideIndex = 1 }
+        if (n < 1) { slideIndex = slides.length }
+        for (i = 0; i < slides.length; i++) {
+            slides[i].style.display = "none";
+        }
+        for (i = 0; i < dots.length; i++) {
+            dots[i].className = dots[i].className.replace(" active", "");
+        }
+        slides[slideIndex - 1].style.display = "block";
+        dots[slideIndex - 1].className += " active";
+        captionText.innerHTML = dots[slideIndex - 1].alt;
+    }
+</script>
+

@@ -1,0 +1,70 @@
+﻿@{
+    //load file _Layout.cshtml vao day
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@using Add_TemplateAdmin.Models
+@model PagedList.IPagedList<Categories>
+@using PagedList.Mvc
+@* viet cac ham o day *@
+@functions{
+    //tao doi tuong thao tac csdl
+    public DataContext db = new DataContext();
+    //lay cac danh muc con
+    public List<Categories> SubCategories(int _id)
+    {
+        List<Categories> _ListRecord = db.Categories.Where(tbl => tbl.parent_id == _id).ToList();
+        return _ListRecord != null ? _ListRecord : new List<Categories>();
+    }
+}
+<div class="col-md-12">
+    <div style="margin-bottom:10px; margin-top:10px;float:right;">
+        <a href="/Admin/Categories/Create" class="btn btn-primary">Add category<i style="margin-left:10px;" class="fas fa-plus"></i></a>
+    </div>
+    <div class="panel panel-primary" style="margin-top: 30px;">
+        <div class="panel-heading font-weight-bold h3 text-center">Danh sách danh mục sản phẩm</div>
+        <div class="panel-body">
+            <table class="table table-bordered table-hover">
+                <tr>
+                    <th>Tên danh mục</th>
+                    <th style="width:170px;">Hiển thị trang chủ</th>
+                    <th style="width:100px"></th>
+                    <th style="width:100px;"></th>
+                </tr>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.name</td>
+                        <td class="text-center">@if (item.displayhome == 1)
+                        {<text><span class="fa fa-check"></span></text>}</td>
+                        <td><a href="/Admin/Categories/Update/@item.id"><i class="fas fa-edit"></i>Edit</a>&nbsp;</td>
+                        <td style="text-align:center;">                          
+                            <a href="/Admin/Categories/Delete/@item.id" onclick="return window.confirm('Are you sure?');"><i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                    //lay cac sub category
+                    List<Categories> _ListCategoriesSub = SubCategories(item.id);
+                    foreach (var itemSub in _ListCategoriesSub)
+                    {
+                        <tr>
+                            <td style="padding-left:35px;">@itemSub.name</td>
+                            <td class="text-center">@if (itemSub.displayhome == 1)
+                            {<text><span class="fa fa-check"></span></text>}</td>
+                            <td> <a href="/Admin/Categories/Update/@itemSub.id"><i class="fas fa-edit"></i>Edit</a>&nbsp;</td>
+                            <td style="text-align:center;">                     
+                                <a href="/Admin/Categories/Delete/@itemSub.id" onclick="return window.confirm('Are you sure?');"><i class="fas fa-trash-alt"></i></a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </table>
+            <style type="text/css">
+                .pagination {
+                    padding: 0px;
+                    margin: 0px;
+                }
+            </style>
+            @Html.PagedListPager((PagedList.IPagedList)Model, page => Url.Action("Read", new { page, a = 1, b = 2 }))
+        </div>
+    </div>
+</div>
+

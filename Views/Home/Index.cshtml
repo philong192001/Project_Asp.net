@@ -1,0 +1,2087 @@
+﻿@*load template LayoutTrangChu.cshtml vao day*@
+@{
+    Layout = "~/Views/Shared/LayoutTrangChu.cshtml";
+}
+@* load thu muc Models de su dung cac class ben trong *@
+@using Add_TemplateAdmin.Models
+@functions{
+    public DataContext db = new DataContext();
+    //sam pham noi bat
+    public List<Products> HotProduct()
+    {
+        //.Take(6) -> lay 6 ban ghi
+        var _listRecord = db.Products.Where(tbl => tbl.hot == 1).OrderByDescending(tbl => tbl.id).Take(4).ToList();
+        return _listRecord != null ? _listRecord : new List<Products>();
+    }
+    //sam pham moi
+    public List<Products> NewProduct()
+    {
+        //.Take(6) -> lay 6 ban ghi
+        var _listRecord = db.Products.OrderByDescending(tbl => tbl.id).Take(4).ToList();
+        return _listRecord != null ? _listRecord : new List<Products>();
+    }
+    //liet ke cac danh muc hien thi trang chu
+    public List<Categories> ListCategories()
+    {
+        var _listRecord = db.Categories.Where(tbl => tbl.displayhome == 1).OrderByDescending(tbl => tbl.id).ToList();
+        return _listRecord != null ? _listRecord : new List<Categories>();
+    }
+    //liet ke cac san pham thuoc danh muc
+    public List<Products> ListProducts(int _category_id)
+    {
+        //.Take(6) -> lay 6 ban ghi
+        var _listRecord = db.Products.Where(tbl => tbl.category_id == _category_id).OrderByDescending(tbl => tbl.id).Take(4).ToList();
+        return _listRecord != null ? _listRecord : new List<Products>();
+    }
+}
+<style>
+    div.stars {
+        width: 270px;
+        display: inline-block;
+    }
+
+    input.star {
+        display: none;
+    }
+
+    label.star {
+        padding: 3px;
+        font-size: 30px;
+        color: #444;
+        transition: all .2s;
+    }
+
+        label.star:hover {
+            transform: rotate(-15deg) scale(1.3);
+            content: '\f005';
+            color: #FD4;
+            transition: all .25s;
+            text-shadow: 0 0 20px #952;
+        }
+
+        label.star:before {
+            content: '\f006';
+            font-family: FontAwesome;
+        }
+</style>
+<!-- Category Area End-->
+<!-- Hot Products Start -->
+<section class="latest-product-area padding-bottom">
+    <div class="container">
+        <div class="row product-btn d-flex justify-content-end align-items-end">
+            <!-- Section Tittle -->
+            <div class="col-xl-4 col-lg-5 col-md-5">
+                <div class="section-tittle mb-30 ">
+                    <h2 class="animate__animated animate__bounceInLeft">Sản phẩm nổi bật</h2>
+                </div>
+            </div>
+            <div class="col-xl-8 col-lg-7 col-md-7">
+                <div class="properties__button f-right">
+                    <!--Nav Button  -->
+                    <nav>
+                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab"
+                               href="#nav-home" role="tab" aria-controls="nav-home"
+                               aria-selected="true">All</a>
+                            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab"
+                               href="#nav-profile" role="tab" aria-controls="nav-profile"
+                               aria-selected="false">New</a>
+                            <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab"
+                               href="#nav-contact" role="tab" aria-controls="nav-contact"
+                               aria-selected="false">Featured</a>
+                            <a class="nav-item nav-link" id="nav-last-tab" data-toggle="tab" href="#nav-last"
+                               role="tab" aria-controls="nav-contact" aria-selected="false">Offer</a>
+                        </div>
+                    </nav>
+                    <!--End Nav Button  -->
+                </div>
+            </div>
+        </div>
+        <!-- Nav Card -->
+        <div class="tab-content" id="nav-tabContent">
+            <!-- card one -->
+            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                <div class="row">
+                    @{
+                        var _listHotProduct = HotProduct();
+                    }
+                    @foreach (var itemHotProduct in _listHotProduct)
+                    {
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="single-product mb-60 animate__animated animate__tada">
+                                <div class="product-img">
+                                    <a href="/Product/Detail/@itemHotProduct.id">
+                                        <img src="~/Assets/upload/Products/@itemHotProduct.photo" alt="Vans classic"
+                                             title="Vans Kyle Walker Pro">
+                                    </a>
+                                    <div class="new-product">
+                                        <span>Hot</span>
+                                    </div>
+                                </div>
+                                <div class="product-caption">
+                                    <div class="start">
+                                        <div style="margin-bottom:5px;">
+                                            <a href="/Product/Rating/@itemHotProduct.id?star=1"><label class="star" for="star"></label></a>
+                                            <a href="/Product/Rating/@itemHotProduct.id?star=2"><label class="star" for="star"></label></a>
+                                            <a href="/Product/Rating/@itemHotProduct.id?star=3"><label class="star" for="star"></label></a>
+                                            <a href="/Product/Rating/@itemHotProduct.id?star=4"><label class="star" for="star"></label></a>
+                                            <a href="/Product/Rating/@itemHotProduct.id?star=5"><label class="star" for="star"></label></a>
+                                        </div>
+                                    </div>
+
+                                    <h4><a href="/Product/Detail/@itemHotProduct.id">@itemHotProduct.name</a></h4>
+                                    <div class="wrapp-swap" style="margin-top:10px;">
+                                        <span class="price">
+                                            <del>
+                                                <span class="Price-amount amount">
+                                                    @String.Format("{0:N0}", itemHotProduct.price) VNĐ
+                                                </span>
+                                            </del>
+                                            <ins>
+                                                <span class="Price-amount amount">
+                                                    @if (itemHotProduct.discount == 0)
+                                                    {<text>@String.Format("{0:N0}", itemHotProduct.price)</text> }
+                                                else
+                                                {<text>@String.Format("{0:N0}", itemHotProduct.price - (itemHotProduct.discount * itemHotProduct.price) / 100)</text>} VNĐ
+                                                </span>
+                                            </ins>
+                                        </span>
+                                        <div class="swap-elements">
+                                            <div class="Shopping">
+                                                <form action="cart/add" method="post" enctype="multipart/form-data" id="product-actions-1168979">
+                                                    <i class="fas fa-shopping-cart" style="margin-right:10px;"></i><a href="/Cart/Buy/@itemHotProduct.id">Mua ngay</a>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+            <!-- Card two -->
+            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                <div class="row">
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/adidas1_new.jpg" alt="Adidas" title=" PROPHERE">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                </div>
+                                <h4><a href="#"> PROPHERE</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$240.00</li>
+                                        <li class="discount">$260.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/adidas2_new.jpg" alt="Adidas"
+                                     title="ULTRABOOST S&L STAR WARS">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                </div>
+                                <h4><a href="#">ULTRABOOST S&L STAR WARS</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$40.00</li>
+                                        <li class="discount">$60.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/adidas3_new.jpg" alt="Adidas"
+                                     title="GIÀY EDGE XT">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                </div>
+                                <h4><a href="#">GIÀY EDGE XT</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$40.00</li>
+                                        <li class="discount">$60.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/nike1_new.jpg" alt="Nike"
+                                     title="Nike Air Force 1 React">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                </div>
+                                <h4><a href="#">Nike Air Force 1 React</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$40.00</li>
+                                        <li class="discount">$60.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/nike2_new.jpg" alt="Nike"
+                                     title="Jordan Westbrook One Take PF">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                </div>
+                                <h4><a href="#">Jordan Westbrook One Take PF</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$340.00</li>
+                                        <li class="discount">$560.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/nike3_new.jpg" alt="Nike"
+                                     title="Air Jordan 7 Retro SE">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                </div>
+                                <h4><a href="#">Air Jordan 7 Retro SE</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$240.00</li>
+                                        <li class="discount">$640.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/vans1_new.png" alt="Vans" title="VINTAGE SLIP-ON">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                </div>
+                                <h4><a href="#">VINTAGE SLIP-ON</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$40.00</li>
+                                        <li class="discount">$60.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/vans2_new.png" alt="Vans"
+                                     title="REFRACT SK8-HI REISSUE">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                </div>
+                                <h4><a href="#">REFRACT SK8-HI REISSUE</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$140.00</li>
+                                        <li class="discount">$260.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/vans3_new.png" alt="Vans"
+                                     title="GILBERT CROCKETT 2 PRO">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <h4><a href="#">GILBERT CROCKETT 2 PRO</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$43.00</li>
+                                        <li class="discount">$69.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Card three -->
+            <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+                <div class="row">
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/vans1_featured.png" alt="Vans" title="OLD SKOOL">
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star "></i>
+                                    <i class="far fa-star "></i>
+                                </div>
+                                <h4><a href="#">OLD SKOOL</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$40.00</li>
+                                        <li class="discount">$60.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/vans2_featured.png" alt="Vans" title="SK8-HI">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <h4><a href="#">SK8-HI</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$40.00</li>
+                                        <li class="discount">$60.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/vans3_featured.png" alt="Vans" title="SLIP-ON">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                </div>
+                                <h4><a href="#">SLIP-ON</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$40.00</li>
+                                        <li class="discount">$60.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/converse3_featured.jpg" alt="Converse"
+                                     title="Chuck Taylor 1970s Hi">
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star "></i>
+                                    <i class="far fa-star "></i>
+                                </div>
+                                <h4><a href="#">Chuck Taylor 1970s Hi</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$40.00</li>
+                                        <li class="discount">$60.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/converse_featured.jpg" alt="Converse"
+                                     title="Chuck Taylor Classic">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star "></i>
+                                    <i class="far fa-star r"></i>
+                                </div>
+                                <h4><a href="#">Chuck Taylor Classic</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$40.00</li>
+                                        <li class="discount">$60.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/converse2_featured.jpg" alt="Converse"
+                                     title="Chuck Taylor 1970s Low">
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star "></i>
+                                    <i class="far fa-star "></i>
+                                </div>
+                                <h4><a href="#">Chuck Taylor 1970s Low</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$40.00</li>
+                                        <li class="discount">$60.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- card foure -->
+            <div class="tab-pane fade" id="nav-last" role="tabpanel" aria-labelledby="nav-last-tab">
+                <div class="row">
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/converse3_featured.jpg" alt="Converse"
+                                     title="Chuck Taylor 1970s Hi">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star "></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <h4><a href="#">Chuck Taylor 1970s Hi</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$40.00</li>
+                                        <li class="discount">$60.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/converse-offer.jpg" alt="Converse"
+                                     title="Run Star Hike Twisted Classic Foundational Canvas">
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star "></i>
+                                    <i class="far fa-star "></i>
+                                </div>
+                                <h4><a href="#">Run Star Hike Twisted Classic Foundational Canvas</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$540.00</li>
+                                        <li class="discount">$760.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/converse1-offer.jpg" alt="Converse"
+                                     title="CPX 70 Twisted Classic Logo Play">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star "></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <h4><a href="#">CPX 70 Twisted Classic Logo Play</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$140.00</li>
+                                        <li class="discount">$260.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/adidas-offer.jpg" alt="Adidas" title="NMD_R1 V2">
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                </div>
+                                <h4><a href="#">NMD_R1 V2</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$40.00</li>
+                                        <li class="discount">$60.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/adidas1-offer.jpg" alt="Adidas"
+                                     title="4D RUN 1.0 LTD">
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                </div>
+                                <h4><a href="#">4D RUN 1.0 LTD</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$40.00</li>
+                                        <li class="discount">$60.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/adidas2-offer.jpg" alt="Adidas"
+                                     title="ULTRABOOST 20">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                </div>
+                                <h4><a href="#">ULTRABOOST 20</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$40.00</li>
+                                        <li class="discount">$60.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- End Nav Card -->
+    </div>
+</section>
+<!-- Hot Products End -->
+<!-- New Products Start-->
+<section class="latest-product-area padding-bottom nike">
+    <div class="container">
+        <div class="row product-btn d-flex justify-content-end align-items-end">
+            <!-- Section Tittle -->
+            <div class="col-xl-4 col-lg-5 col-md-5">
+                <div class="section-tittle mb-30">
+                    <h2>Sản phẩm mới</h2>
+                </div>
+            </div>
+            <div class="col-xl-8 col-lg-7 col-md-7">
+                <div class="properties__button f-right">
+                    <!--Nav Button  -->
+                    <nav>
+                        <div class="nav nav-tabs" id="nav-tab-nike" role="tablist">
+                            <a class="nav-item nav-link active" id="nav-home-tab-nike" data-toggle="tab"
+                               href="#nav-home-nike" role="tab" aria-controls="nav-home"
+                               aria-selected="true">All</a>
+                            <a class="nav-item nav-link" id="nav-profile-tab-nike" data-toggle="tab"
+                               href="#nav-profile-nike" role="tab" aria-controls="nav-profile"
+                               aria-selected="false">Air Force 1</a>
+                            <a class="nav-item nav-link" id="nav-contact-tab-nike" data-toggle="tab"
+                               href="#nav-contact-nike" role="tab" aria-controls="nav-contact"
+                               aria-selected="false">Jordan</a>
+                            <a class="nav-item nav-link" id="nav-last-tab-nike" data-toggle="tab" href="#nav-last-nike"
+                               role="tab" aria-controls="nav-contact" aria-selected="false">Uptempo</a>
+                        </div>
+                    </nav>
+                    <!--End Nav Button  -->
+                </div>
+            </div>
+        </div>
+        <!-- Nav Card -->
+        <div class="tab-content" id="nav-tabContent">
+            <!-- card one -->
+            <div class="tab-pane fade show active" id="nav-home-nike" role="tabpanel" aria-labelledby="nav-home-tab-nike">
+                <div class="row">
+                    @{
+                        var _listNewProduct = NewProduct();
+                    }
+                    @foreach (var itemNewProduct in _listNewProduct)
+                    {
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="single-product mb-60 animate__animated animate__tada">
+                                <div class="product-img">
+                                    <a href="/Product/Detail/@itemNewProduct.id">
+                                        <img src="~/Assets/upload/Products/@itemNewProduct.photo" alt="Vans classic"
+                                             title="Vans Kyle Walker Pro">
+                                    </a>
+                                    <div class="new-product">
+                                        <span>New</span>
+                                    </div>
+                                </div>
+                                <div class="product-caption">
+                                    <div class="start">
+                                        <div style="margin-bottom:5px;">
+                                            <a href="/Product/Rating/@itemNewProduct.id?star=1">  <label class="star" for="star"></label></a>
+                                            <a href="/Product/Rating/@itemNewProduct.id?star=2"><label class="star" for="star"></label></a>
+                                            <a href="/Product/Rating/@itemNewProduct.id?star=3"><label class="star" for="star"></label></a>
+                                            <a href="/Product/Rating/@itemNewProduct.id?star=4"><label class="star" for="star"></label></a>
+                                            <a href="/Product/Rating/@itemNewProduct.id?star=5"><label class="star" for="star"></label></a>
+                                        </div>
+                                    </div>
+                                    <h4><a href="/Product/Detail/@itemNewProduct.id">@itemNewProduct.name</a></h4>
+                                    <div class="wrapp-swap" style="margin-top:10px;">
+                                        <span class="price">
+                                            <del>
+                                                <span class="Price-amount amount">
+                                                    @String.Format("{0:N0}", itemNewProduct.price) VNĐ
+                                                </span>
+                                            </del>
+                                            <ins>
+                                                <span class="Price-amount amount">
+                                                    @if (itemNewProduct.discount == 0)
+                                                    {<text>@String.Format("{0:N0}", itemNewProduct.price)</text> }
+                                                else
+                                                {<text>@String.Format("{0:N0}", itemNewProduct.price - (itemNewProduct.discount * itemNewProduct.price) / 100)</text>} VNĐ
+                                                </span>
+                                            </ins>
+                                        </span>
+                                        <div class="swap-elements">
+                                            <div class="Shopping">
+                                                <form action="cart/add" method="post" enctype="multipart/form-data" id="product-actions-1168979">
+                                                    <i class="fas fa-shopping-cart" style="margin-right:10px;"></i><a href="/Cart/Buy/@itemNewProduct.id">Mua ngay</a>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+
+                </div>
+            </div>
+            <!-- Card two -->
+            <div class="tab-pane fade" id="nav-profile-nike" role="tabpanel" aria-labelledby="nav-profile-tab-nike">
+                <div class="row">
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/Nike/nike12.jpg" alt="Nike" title=" Air Jordan XXXIV PF">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                </div>
+                                <h4><a href="#"> Air Jordan XXXIV PF</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$240.00</li>
+                                        <li class="discount">$260.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/Nike/nike10.jpg" alt="Nike"
+                                     title="Nike React Infinity Run Flyknit">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                </div>
+                                <h4><a href="#">Nike React Infinity Run Flyknit</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$40.00</li>
+                                        <li class="discount">$60.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/Nike/nike9.jpg" alt="Adidas"
+                                     title="Nike Air Zoom SuperRep">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                </div>
+                                <h4><a href="#">Nike Air Zoom SuperRep</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$40.00</li>
+                                        <li class="discount">$60.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/Nike/nike8.jpg" alt="Nike"
+                                     title="Nike Zoom Pegasus Turbo 2">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                </div>
+                                <h4><a href="#">Nike Zoom Pegasus Turbo 2</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$40.00</li>
+                                        <li class="discount">$60.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/nike2_new.jpg" alt="Nike"
+                                     title="Jordan Westbrook One Take PF">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                </div>
+                                <h4><a href="#">Jordan Westbrook One Take PF</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$340.00</li>
+                                        <li class="discount">$560.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/nike3_new.jpg" alt="Nike"
+                                     title="Air Jordan 7 Retro SE">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                </div>
+                                <h4><a href="#">Air Jordan 7 Retro SE</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$240.00</li>
+                                        <li class="discount">$640.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/Nike/nike7.jpg" alt="Nike"
+                                     title="Nike Air VaporMax Flyknit 3">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                </div>
+                                <h4><a href="#">Nike Air VaporMax Flyknit 3</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$40.00</li>
+                                        <li class="discount">$60.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/Nike/nike6.jpg" alt="Nike" title="Nike Air Force 1 '07">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                </div>
+                                <h4><a href="#">Nike Air Force 1 '07</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$140.00</li>
+                                        <li class="discount">$260.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/Nike/nike5.jpg" alt="Nike" title="Air Jordan 1 Mid SE">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <h4><a href="#">Air Jordan 1 Mid SE</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$43.00</li>
+                                        <li class="discount">$69.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Card three -->
+            <div class="tab-pane fade" id="nav-contact-nike" role="tabpanel" aria-labelledby="nav-contact-tab-nike">
+                <div class="row">
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/vans1_featured.png" alt="Vans" title="OLD SKOOL">
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star "></i>
+                                    <i class="far fa-star "></i>
+                                </div>
+                                <h4><a href="#">OLD SKOOL</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$40.00</li>
+                                        <li class="discount">$60.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/vans2_featured.png" alt="Vans" title="SK8-HI">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <h4><a href="#">SK8-HI</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$40.00</li>
+                                        <li class="discount">$60.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/vans3_featured.png" alt="Vans" title="SLIP-ON">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                </div>
+                                <h4><a href="#">SLIP-ON</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$40.00</li>
+                                        <li class="discount">$60.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/converse3_featured.jpg" alt="Converse"
+                                     title="Chuck Taylor 1970s Hi">
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star "></i>
+                                    <i class="far fa-star "></i>
+                                </div>
+                                <h4><a href="#">Chuck Taylor 1970s Hi</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$40.00</li>
+                                        <li class="discount">$60.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/converse_featured.jpg" alt="Converse"
+                                     title="Chuck Taylor Classic">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star "></i>
+                                    <i class="far fa-star r"></i>
+                                </div>
+                                <h4><a href="#">Chuck Taylor Classic</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$40.00</li>
+                                        <li class="discount">$60.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/converse2_featured.jpg" alt="Converse"
+                                     title="Chuck Taylor 1970s Low">
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star "></i>
+                                    <i class="far fa-star "></i>
+                                </div>
+                                <h4><a href="#">Chuck Taylor 1970s Low</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$40.00</li>
+                                        <li class="discount">$60.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- card foure -->
+            <div class="tab-pane fade" id="nav-last-nike" role="tabpanel" aria-labelledby="nav-last-tab-nike">
+                <div class="row">
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/converse3_featured.jpg" alt="Converse"
+                                     title="Chuck Taylor 1970s Hi">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star "></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <h4><a href="#">Chuck Taylor 1970s Hi</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$40.00</li>
+                                        <li class="discount">$60.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/converse-offer.jpg" alt="Converse"
+                                     title="Run Star Hike Twisted Classic Foundational Canvas">
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star "></i>
+                                    <i class="far fa-star "></i>
+                                </div>
+                                <h4><a href="#">Run Star Hike Twisted Classic Foundational Canvas</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$540.00</li>
+                                        <li class="discount">$760.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/converse1-offer.jpg" alt="Converse"
+                                     title="CPX 70 Twisted Classic Logo Play">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star "></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <h4><a href="#">CPX 70 Twisted Classic Logo Play</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$140.00</li>
+                                        <li class="discount">$260.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/adidas-offer.jpg" alt="Adidas" title="NMD_R1 V2">
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                </div>
+                                <h4><a href="#">NMD_R1 V2</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$40.00</li>
+                                        <li class="discount">$60.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/adidas1-offer.jpg" alt="Adidas"
+                                     title="4D RUN 1.0 LTD">
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                </div>
+                                <h4><a href="#">4D RUN 1.0 LTD</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$40.00</li>
+                                        <li class="discount">$60.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6">
+                        <div class="single-product mb-60">
+                            <div class="product-img">
+                                <img src="Assets/frontend/img/categori/adidas2-offer.jpg" alt="Adidas"
+                                     title="ULTRABOOST 20">
+                                <div class="new-product">
+                                    <span>New</span>
+                                </div>
+                            </div>
+                            <div class="product-caption">
+                                <div class="product-ratting">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                    <i class="far fa-star low-star"></i>
+                                </div>
+                                <h4><a href="#">ULTRABOOST 20</a></h4>
+                                <div class="price">
+                                    <ul>
+                                        <li>$40.00</li>
+                                        <li class="discount">$60.00</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Nav Card -->
+
+    </div>
+</section>
+<!-- New List End -->
+<!--Categories Start-->
+@{
+    var _listCategories = ListCategories();
+}
+@foreach (var itemCategory in _listCategories)
+{
+    <section class="latest-product-area padding-bottom nike">
+        <div class="container">
+            <div class="row product-btn d-flex justify-content-end align-items-end">
+                <!-- Section Tittle -->
+                <div class="col-xl-4 col-lg-5 col-md-5">
+                    <div class="section-tittle mb-30">
+                        <h2>@itemCategory.name</h2>
+                    </div>
+                </div>
+                <div class="col-xl-8 col-lg-7 col-md-7">
+                    <div class="properties__button f-right">
+                        <!--Nav Button  -->
+                        <nav>
+                            <div class="nav nav-tabs" id="nav-tab-nike" role="tablist">
+                                <a class="nav-item nav-link active" id="nav-home-tab-nike" data-toggle="tab"
+                                   href="#nav-home-nike" role="tab" aria-controls="nav-home"
+                                   aria-selected="true">All</a>
+                                <a class="nav-item nav-link" id="nav-profile-tab-nike" data-toggle="tab"
+                                   href="#nav-profile-nike" role="tab" aria-controls="nav-profile"
+                                   aria-selected="false">Air Force 1</a>
+                                <a class="nav-item nav-link" id="nav-contact-tab-nike" data-toggle="tab"
+                                   href="#nav-contact-nike" role="tab" aria-controls="nav-contact"
+                                   aria-selected="false">Jordan</a>
+                                <a class="nav-item nav-link" id="nav-last-tab-nike" data-toggle="tab" href="#nav-last-nike"
+                                   role="tab" aria-controls="nav-contact" aria-selected="false">Uptempo</a>
+                            </div>
+                        </nav>
+                        <!--End Nav Button  -->
+                    </div>
+                </div>
+            </div>
+            <!-- Nav Card -->
+            <div class="tab-content" id="nav-tabContent">
+                <!-- card one -->
+                <div class="tab-pane fade show active" id="nav-home-nike " role="tabpanel" aria-labelledby="nav-home-tab-nike">
+                    <div class="row" id="load_@itemCategory.id">
+                        @{
+                            var _listProduct = ListProducts(itemCategory.id);
+                        }
+
+                        @foreach (var itemProduct in _listProduct)
+                        {
+                            <div class="col-xl-3 col-lg-4 col-md-6">
+                                <div class="single-product mb-60 animate__animated animate__tada">
+                                    <div class="product-img">
+                                        <a href="/Product/Detail/@itemProduct.id">
+                                            <img style="overflow:hidden;" src="~/Assets/upload/Products/@itemProduct.photo" alt="@itemProduct.name "
+                                                 title="@itemProduct.name">
+                                        </a>
+                                        <div class="new-product">
+                                            <span>@itemProduct.discount %</span>
+                                        </div>
+                                    </div>
+                                    <div class="product-caption">
+                                        <div class="start">
+                                            <div style="margin-bottom:5px;">
+                                                <a href="/Product/Rating/@itemProduct.id?star=1">  <label class="star" for="star"></label></a>
+                                                <a href="/Product/Rating/@itemProduct.id?star=2"><label class="star" for="star"></label></a>
+                                                <a href="/Product/Rating/@itemProduct.id?star=3"><label class="star" for="star"></label></a>
+                                                <a href="/Product/Rating/@itemProduct.id?star=4"><label class="star" for="star"></label></a>
+                                                <a href="/Product/Rating/@itemProduct.id?star=5"><label class="star" for="star"></label></a>
+                                            </div>
+                                        </div>
+                                        <h4><a href="/Product/Detail/@itemProduct.id">@itemProduct.name</a></h4>
+                                        <div class="wrapp-swap" style="margin-top:10px;">
+                                            <span class="price" style="">
+                                                <del>
+                                                    <span class="Price-amount amount">
+                                                        @String.Format("{0:N0}", itemProduct.price) VNĐ
+                                                    </span>
+                                                </del>
+                                                <ins>
+                                                    <span class="Price-amount amount">
+                                                        @if (itemProduct.discount == 0)
+                                                        {<text>@String.Format("{0:N0}", itemProduct.price)</text> }
+                                                    else
+                                                    {<text>@String.Format("{0:N0}", itemProduct.price - (itemProduct.discount * itemProduct.price) / 100)</text>} VNĐ
+                                                    </span>
+                                                </ins>
+                                            </span>
+                                            <div class="swap-elements">
+                                                <div class="Shopping">
+                                                    <form action="cart/add" method="post" enctype="multipart/form-data" id="product-actions-1168979">
+                                                        <i class="fas fa-shopping-cart" style="margin-right:10px;"></i><a href="/Cart/Buy/@itemProduct.id">Mua ngay</a>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+
+
+                    </div>
+                </div>
+                <!-- Card two -->
+                <div class="tab-pane fade" id="nav-profile-nike" role="tabpanel" aria-labelledby="nav-profile-tab-nike">
+                    <div class="row">
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="single-product mb-60">
+                                <div class="product-img">
+                                    <img src="Assets/frontend/img/Nike/nike12.jpg" alt="Nike" title=" Air Jordan XXXIV PF">
+                                    <div class="new-product">
+                                        <span>New</span>
+                                    </div>
+                                </div>
+                                <div class="product-caption">
+                                    <div class="product-ratting">
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star low-star"></i>
+                                        <i class="far fa-star low-star"></i>
+                                    </div>
+                                    <h4><a href="#"> Air Jordan XXXIV PF</a></h4>
+                                    <div class="price">
+                                        <ul>
+                                            <li>$240.00</li>
+                                            <li class="discount">$260.00</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="single-product mb-60">
+                                <div class="product-img">
+                                    <img src="Assets/frontend/img/Nike/nike10.jpg" alt="Nike"
+                                         title="Nike React Infinity Run Flyknit">
+                                    <div class="new-product">
+                                        <span>New</span>
+                                    </div>
+                                </div>
+                                <div class="product-caption">
+                                    <div class="product-ratting">
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star low-star"></i>
+                                        <i class="far fa-star low-star"></i>
+                                    </div>
+                                    <h4><a href="#">Nike React Infinity Run Flyknit</a></h4>
+                                    <div class="price">
+                                        <ul>
+                                            <li>$40.00</li>
+                                            <li class="discount">$60.00</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="single-product mb-60">
+                                <div class="product-img">
+                                    <img src="Assets/frontend/img/Nike/nike9.jpg" alt="Adidas"
+                                         title="Nike Air Zoom SuperRep">
+                                    <div class="new-product">
+                                        <span>New</span>
+                                    </div>
+                                </div>
+                                <div class="product-caption">
+                                    <div class="product-ratting">
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star low-star"></i>
+                                        <i class="far fa-star low-star"></i>
+                                    </div>
+                                    <h4><a href="#">Nike Air Zoom SuperRep</a></h4>
+                                    <div class="price">
+                                        <ul>
+                                            <li>$40.00</li>
+                                            <li class="discount">$60.00</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="single-product mb-60">
+                                <div class="product-img">
+                                    <img src="Assets/frontend/img/Nike/nike8.jpg" alt="Nike"
+                                         title="Nike Zoom Pegasus Turbo 2">
+                                    <div class="new-product">
+                                        <span>New</span>
+                                    </div>
+                                </div>
+                                <div class="product-caption">
+                                    <div class="product-ratting">
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star low-star"></i>
+                                        <i class="far fa-star low-star"></i>
+                                    </div>
+                                    <h4><a href="#">Nike Zoom Pegasus Turbo 2</a></h4>
+                                    <div class="price">
+                                        <ul>
+                                            <li>$40.00</li>
+                                            <li class="discount">$60.00</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="single-product mb-60">
+                                <div class="product-img">
+                                    <img src="Assets/frontend/img/categori/nike2_new.jpg" alt="Nike"
+                                         title="Jordan Westbrook One Take PF">
+                                    <div class="new-product">
+                                        <span>New</span>
+                                    </div>
+                                </div>
+                                <div class="product-caption">
+                                    <div class="product-ratting">
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star low-star"></i>
+                                        <i class="far fa-star low-star"></i>
+                                    </div>
+                                    <h4><a href="#">Jordan Westbrook One Take PF</a></h4>
+                                    <div class="price">
+                                        <ul>
+                                            <li>$340.00</li>
+                                            <li class="discount">$560.00</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="single-product mb-60">
+                                <div class="product-img">
+                                    <img src="Assets/frontend/img/categori/nike3_new.jpg" alt="Nike"
+                                         title="Air Jordan 7 Retro SE">
+                                    <div class="new-product">
+                                        <span>New</span>
+                                    </div>
+                                </div>
+                                <div class="product-caption">
+                                    <div class="product-ratting">
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star low-star"></i>
+                                        <i class="far fa-star low-star"></i>
+                                    </div>
+                                    <h4><a href="#">Air Jordan 7 Retro SE</a></h4>
+                                    <div class="price">
+                                        <ul>
+                                            <li>$240.00</li>
+                                            <li class="discount">$640.00</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="single-product mb-60">
+                                <div class="product-img">
+                                    <img src="Assets/frontend/img/Nike/nike7.jpg" alt="Nike"
+                                         title="Nike Air VaporMax Flyknit 3">
+                                    <div class="new-product">
+                                        <span>New</span>
+                                    </div>
+                                </div>
+                                <div class="product-caption">
+                                    <div class="product-ratting">
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star low-star"></i>
+                                        <i class="far fa-star low-star"></i>
+                                    </div>
+                                    <h4><a href="#">Nike Air VaporMax Flyknit 3</a></h4>
+                                    <div class="price">
+                                        <ul>
+                                            <li>$40.00</li>
+                                            <li class="discount">$60.00</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="single-product mb-60">
+                                <div class="product-img">
+                                    <img src="Assets/frontend/img/Nike/nike6.jpg" alt="Nike" title="Nike Air Force 1 '07">
+                                    <div class="new-product">
+                                        <span>New</span>
+                                    </div>
+                                </div>
+                                <div class="product-caption">
+                                    <div class="product-ratting">
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star low-star"></i>
+                                        <i class="far fa-star low-star"></i>
+                                    </div>
+                                    <h4><a href="#">Nike Air Force 1 '07</a></h4>
+                                    <div class="price">
+                                        <ul>
+                                            <li>$140.00</li>
+                                            <li class="discount">$260.00</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="single-product mb-60">
+                                <div class="product-img">
+                                    <img src="Assets/frontend/img/Nike/nike5.jpg" alt="Nike" title="Air Jordan 1 Mid SE">
+                                    <div class="new-product">
+                                        <span>New</span>
+                                    </div>
+                                </div>
+                                <div class="product-caption">
+                                    <div class="product-ratting">
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                    </div>
+                                    <h4><a href="#">Air Jordan 1 Mid SE</a></h4>
+                                    <div class="price">
+                                        <ul>
+                                            <li>$43.00</li>
+                                            <li class="discount">$69.00</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card three -->
+                <div class="tab-pane fade" id="nav-contact-nike" role="tabpanel" aria-labelledby="nav-contact-tab-nike">
+                    <div class="row">
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="single-product mb-60">
+                                <div class="product-img">
+                                    <img src="Assets/frontend/img/categori/vans1_featured.png" alt="Vans" title="OLD SKOOL">
+                                </div>
+                                <div class="product-caption">
+                                    <div class="product-ratting">
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star "></i>
+                                        <i class="far fa-star "></i>
+                                    </div>
+                                    <h4><a href="#">OLD SKOOL</a></h4>
+                                    <div class="price">
+                                        <ul>
+                                            <li>$40.00</li>
+                                            <li class="discount">$60.00</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="single-product mb-60">
+                                <div class="product-img">
+                                    <img src="Assets/frontend/img/categori/vans2_featured.png" alt="Vans" title="SK8-HI">
+                                    <div class="new-product">
+                                        <span>New</span>
+                                    </div>
+                                </div>
+                                <div class="product-caption">
+                                    <div class="product-ratting">
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                    </div>
+                                    <h4><a href="#">SK8-HI</a></h4>
+                                    <div class="price">
+                                        <ul>
+                                            <li>$40.00</li>
+                                            <li class="discount">$60.00</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="single-product mb-60">
+                                <div class="product-img">
+                                    <img src="Assets/frontend/img/categori/vans3_featured.png" alt="Vans" title="SLIP-ON">
+                                    <div class="new-product">
+                                        <span>New</span>
+                                    </div>
+                                </div>
+                                <div class="product-caption">
+                                    <div class="product-ratting">
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star low-star"></i>
+                                        <i class="far fa-star low-star"></i>
+                                    </div>
+                                    <h4><a href="#">SLIP-ON</a></h4>
+                                    <div class="price">
+                                        <ul>
+                                            <li>$40.00</li>
+                                            <li class="discount">$60.00</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="single-product mb-60">
+                                <div class="product-img">
+                                    <img src="Assets/frontend/img/categori/converse3_featured.jpg" alt="Converse"
+                                         title="Chuck Taylor 1970s Hi">
+                                </div>
+                                <div class="product-caption">
+                                    <div class="product-ratting">
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star "></i>
+                                        <i class="far fa-star "></i>
+                                    </div>
+                                    <h4><a href="#">Chuck Taylor 1970s Hi</a></h4>
+                                    <div class="price">
+                                        <ul>
+                                            <li>$40.00</li>
+                                            <li class="discount">$60.00</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="single-product mb-60">
+                                <div class="product-img">
+                                    <img src="Assets/frontend/img/categori/converse_featured.jpg" alt="Converse"
+                                         title="Chuck Taylor Classic">
+                                    <div class="new-product">
+                                        <span>New</span>
+                                    </div>
+                                </div>
+                                <div class="product-caption">
+                                    <div class="product-ratting">
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star "></i>
+                                        <i class="far fa-star r"></i>
+                                    </div>
+                                    <h4><a href="#">Chuck Taylor Classic</a></h4>
+                                    <div class="price">
+                                        <ul>
+                                            <li>$40.00</li>
+                                            <li class="discount">$60.00</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="single-product mb-60">
+                                <div class="product-img">
+                                    <img src="Assets/frontend/img/categori/converse2_featured.jpg" alt="Converse"
+                                         title="Chuck Taylor 1970s Low">
+                                </div>
+                                <div class="product-caption">
+                                    <div class="product-ratting">
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star "></i>
+                                        <i class="far fa-star "></i>
+                                    </div>
+                                    <h4><a href="#">Chuck Taylor 1970s Low</a></h4>
+                                    <div class="price">
+                                        <ul>
+                                            <li>$40.00</li>
+                                            <li class="discount">$60.00</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- card foure -->
+                <div class="tab-pane fade" id="nav-last-nike" role="tabpanel" aria-labelledby="nav-last-tab-nike">
+                    <div class="row">
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="single-product mb-60">
+                                <div class="product-img">
+                                    <img src="Assets/frontend/img/categori/converse3_featured.jpg" alt="Converse"
+                                         title="Chuck Taylor 1970s Hi">
+                                    <div class="new-product">
+                                        <span>New</span>
+                                    </div>
+                                </div>
+                                <div class="product-caption">
+                                    <div class="product-ratting">
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star "></i>
+                                        <i class="far fa-star"></i>
+                                    </div>
+                                    <h4><a href="#">Chuck Taylor 1970s Hi</a></h4>
+                                    <div class="price">
+                                        <ul>
+                                            <li>$40.00</li>
+                                            <li class="discount">$60.00</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="single-product mb-60">
+                                <div class="product-img">
+                                    <img src="Assets/frontend/img/categori/converse-offer.jpg" alt="Converse"
+                                         title="Run Star Hike Twisted Classic Foundational Canvas">
+                                </div>
+                                <div class="product-caption">
+                                    <div class="product-ratting">
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star "></i>
+                                        <i class="far fa-star "></i>
+                                    </div>
+                                    <h4><a href="#">Run Star Hike Twisted Classic Foundational Canvas</a></h4>
+                                    <div class="price">
+                                        <ul>
+                                            <li>$540.00</li>
+                                            <li class="discount">$760.00</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="single-product mb-60">
+                                <div class="product-img">
+                                    <img src="Assets/frontend/img/categori/converse1-offer.jpg" alt="Converse"
+                                         title="CPX 70 Twisted Classic Logo Play">
+                                    <div class="new-product">
+                                        <span>New</span>
+                                    </div>
+                                </div>
+                                <div class="product-caption">
+                                    <div class="product-ratting">
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star "></i>
+                                        <i class="far fa-star"></i>
+                                    </div>
+                                    <h4><a href="#">CPX 70 Twisted Classic Logo Play</a></h4>
+                                    <div class="price">
+                                        <ul>
+                                            <li>$140.00</li>
+                                            <li class="discount">$260.00</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="single-product mb-60">
+                                <div class="product-img">
+                                    <img src="Assets/frontend/img/categori/adidas-offer.jpg" alt="Adidas" title="NMD_R1 V2">
+                                </div>
+                                <div class="product-caption">
+                                    <div class="product-ratting">
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star low-star"></i>
+                                        <i class="far fa-star low-star"></i>
+                                    </div>
+                                    <h4><a href="#">NMD_R1 V2</a></h4>
+                                    <div class="price">
+                                        <ul>
+                                            <li>$40.00</li>
+                                            <li class="discount">$60.00</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="single-product mb-60">
+                                <div class="product-img">
+                                    <img src="Assets/frontend/img/categori/adidas1-offer.jpg" alt="Adidas"
+                                         title="4D RUN 1.0 LTD">
+                                </div>
+                                <div class="product-caption">
+                                    <div class="product-ratting">
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star low-star"></i>
+                                        <i class="far fa-star low-star"></i>
+                                    </div>
+                                    <h4><a href="#">4D RUN 1.0 LTD</a></h4>
+                                    <div class="price">
+                                        <ul>
+                                            <li>$40.00</li>
+                                            <li class="discount">$60.00</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="single-product mb-60">
+                                <div class="product-img">
+                                    <img src="Assets/frontend/img/categori/adidas2-offer.jpg" alt="Adidas"
+                                         title="ULTRABOOST 20">
+                                    <div class="new-product">
+                                        <span>New</span>
+                                    </div>
+                                </div>
+                                <div class="product-caption">
+                                    <div class="product-ratting">
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star low-star"></i>
+                                        <i class="far fa-star low-star"></i>
+                                    </div>
+                                    <h4><a href="#">ULTRABOOST 20</a></h4>
+                                    <div class="price">
+                                        <ul>
+                                            <li>$40.00</li>
+                                            <li class="discount">$60.00</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- End Nav Card -->
+            <div class="product-footer show-arrow">
+                <input type="button" class="btn basel-product-load-more" onclick="ajaxLoadMore(@itemCategory.id, fromProduct, recordPerPage); fromProduct = fromProduct + recordPerPage;" value="Load More" />
+            </div>
+        </div>
+    </section>
+    <script language="javascript">
+        //do da load 4 san pham o tren, vi vay fromProduct = 4 de lay tiep 4 sp tiep theo
+        var fromProduct = 4;
+        var recordPerPage = 4;//lay bao nhieu ban ghi trong 1 lan lay
+    </script>
+    <script language="javascript">
+        function ajaxLoadMore(category_id, fromProduct, recordPerPage) {
+            //dòng này là tính alij số lượng fromproduct dựa vào các item đã loadmore ra đc\
+
+            fromProduct = $("#load_" + category_id + " > div").length;
+            //---
+            $.ajax({
+                url: "/Home/AjaxSearch?category_id=" + category_id + "&fromProduct=" + fromProduct + "&recordPerPage=" + recordPerPage,
+                type: "GET",
+                success: function (result) {
+                    console.log($(this));
+                    $("#load_" + category_id).append(result);
+                    
+                    //alert("/Home/AjaxSearch?category_id=" + category_id + "&fromProduct=" + fromProduct + "&recordPerPage=" + recordPerPage);
+                    //alert(result);
+                }
+            });
+            //lay 4 ban ghi tiep theo
+            fromProduct = fromProduct + recordPerPage;
+            //alert(fromProduct);
+            //alert("/Home/AjaxSearch?category_id=" + category_id + "&fromProduct=" + fromProduct + "&recordPerPage=" + recordPerPage);
+            //---
+        }
+    </script>
+}
+
+
+<!--Categories End-->

@@ -1,0 +1,80 @@
+﻿@{
+    //load file _Layout.cshtml vao day
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@using Add_TemplateAdmin.Models
+@model PagedList.IPagedList<Products>
+@using PagedList.Mvc
+@* viet cac ham o day *@
+@functions{
+    //tao doi tuong thao tac csdl
+    public DataContext db = new DataContext();
+    //lay ten danh muc
+    public string GetCategoryName(int _category_id)
+    {
+        Categories record = db.Categories.Where(tbl => tbl.id == _category_id).FirstOrDefault();
+        return record != null ? record.name : "";
+    }
+}
+<div class="col-md-12">
+    <div style="margin-bottom:10px; margin-top:10px;float:right;">
+        <a href="/Admin/Products/Create" class="btn btn-primary">Add product<i style="margin-left:10px;" class="fas fa-plus"></i></a>
+    </div>
+    <div class="panel panel-primary"  style="margin-top: 30px;">
+        <div class="panel-heading font-weight-bold h3 text-center">Danh sách sản phẩm</div>
+        <div class="panel-body">
+            <table class="table table-bordered table-hover">
+                <tr>
+                    <th style="width:100px;">Ảnh sản phẩm</th>
+                    <th>Tên sản phẩm</th>
+                    <th style="width:150px;">Giá cũ</th>
+                    <th style="width:150px;">Giá mới</th>
+                    <th style="width:100px;">Danh mục</th>
+                    <th style="width:100px; text-align:center">Hot</th>
+                    <th style="width:80px;"></th>
+                    <th style="width:100px;"></th>
+                </tr>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @if (File.Exists(Server.MapPath("~/Assets/Upload/Products/" + item.photo)))
+                            {
+                                <img src="~/Assets/Upload/Products/@item.photo" style="width:100px;" />
+                            }
+                        </td>
+                        <td>@item.name</td>
+                        <td class="text-center">@String.Format("{0:N0}", item.price) VNĐ</td>
+                        <td class="text-center">@if (item.discount == 0)
+                        {<text>@String.Format("{0:N0}", item.price)</text> }
+                    else
+                    {<text>@String.Format("{0:N0}", item.price - (item.discount * item.price) / 100)</text>} VNĐ</td>
+                        <td>@GetCategoryName(item.category_id)</td>
+                        <td style="text-align:center">
+                            @if (item.hot == 1)
+                            {
+                                <span class="fa fa-check"></span>
+                            }
+                        </td>
+                        <td>
+                            <a href="/Admin/Products/Update/@item.id"><i class="fas fa-edit"></i>Edit</a>&nbsp;
+                        </td>
+                        <td style="text-align:center;">                      
+                            <a href="/Admin/Products/Delete/@item.id" onclick="return window.confirm('Are you sure?');"><i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+
+                }
+            </table>
+            <style type="text/css">
+                .pagination {
+                    padding: 0px;
+                    margin: 0px;
+                }
+            </style>
+            @Html.PagedListPager((PagedList.IPagedList)Model, page => Url.Action("Read", new { page, a = 1, b = 2 }))
+        </div>
+    </div>
+</div>
+
+
